@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wlh.springcloud.dao.T3KaoqinDao">
+  <resultMap id="BaseResultMap" type="com.wlh.springcloud.entities.T3Kaoqin">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="kaoqing_id" jdbcType="INTEGER" property="kaoqingId" />
+    <result column="qj_term" jdbcType="VARCHAR" property="qjTerm" />
+    <result column="DataDateTime" jdbcType="VARCHAR" property="datadatetime" />
+    <result column="ControllerID" jdbcType="INTEGER" property="controllerid" />
+    <result column="controler_name" jdbcType="VARCHAR" property="controlerName" />
+    <result column="control_task_order_id" jdbcType="INTEGER" property="controlTaskOrderId" />
+    <result column="bf_studentID" jdbcType="INTEGER" property="bfStudentid" />
+    <result column="bf_Name" jdbcType="VARCHAR" property="bfName" />
+    <result column="cla_Name" jdbcType="VARCHAR" property="claName" />
+    <result column="bf_classid" jdbcType="INTEGER" property="bfClassid" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, kaoqing_id, qj_term, DataDateTime, ControllerID, controler_name, control_task_order_id, 
+    bf_studentID, bf_Name, cla_Name, bf_classid
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t3_kaoqin
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+
+
+  <select id="getAllChengjiFromClaIds" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t3_kaoqin
+    where bf_classid IN #{claIds,jdbcType=INTEGER}
+  </select>
+  <select id="selectByStudentId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t3_kaoqin
+    where bf_studentID = #{studentId,jdbcType=INTEGER}
+  </select>
+  <select id="selectByClaId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t3_kaoqin
+    where bf_classid = #{claId,jdbcType=INTEGER}
+  </select>
+  <select id="getAllKaoqin" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t3_kaoqin
+  </select>
+
+
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from t3_kaoqin
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.wlh.springcloud.entities.T3Kaoqin" useGeneratedKeys="true">
+    insert into t3_kaoqin (kaoqing_id, qj_term, DataDateTime, 
+      ControllerID, controler_name, control_task_order_id, 
+      bf_studentID, bf_Name, cla_Name, 
+      bf_classid)
+    values (#{kaoqingId,jdbcType=INTEGER}, #{qjTerm,jdbcType=VARCHAR}, #{datadatetime,jdbcType=VARCHAR}, 
+      #{controllerid,jdbcType=INTEGER}, #{controlerName,jdbcType=VARCHAR}, #{controlTaskOrderId,jdbcType=INTEGER}, 
+      #{bfStudentid,jdbcType=INTEGER}, #{bfName,jdbcType=VARCHAR}, #{claName,jdbcType=VARCHAR}, 
+      #{bfClassid,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.wlh.springcloud.entities.T3Kaoqin" useGeneratedKeys="true">
+    insert into t3_kaoqin
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="kaoqingId != null">
+        kaoqing_id,
+      </if>
+      <if test="qjTerm != null">
+        qj_term,
+      </if>
+      <if test="datadatetime != null">
+        DataDateTime,
+      </if>
+      <if test="controllerid != null">
+        ControllerID,
+      </if>
+      <if test="controlerName != null">
+        controler_name,
+      </if>
+      <if test="controlTaskOrderId != null">
+        control_task_order_id,
+      </if>
+      <if test="bfStudentid != null">
+        bf_studentID,
+      </if>
+      <if test="bfName != null">
+        bf_Name,
+      </if>
+      <if test="claName != null">
+        cla_Name,
+      </if>
+      <if test="bfClassid != null">
+        bf_classid,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="kaoqingId != null">
+        #{kaoqingId,jdbcType=INTEGER},
+      </if>
+      <if test="qjTerm != null">
+        #{qjTerm,jdbcType=VARCHAR},
+      </if>
+      <if test="datadatetime != null">
+        #{datadatetime,jdbcType=VARCHAR},
+      </if>
+      <if test="controllerid != null">
+        #{controllerid,jdbcType=INTEGER},
+      </if>
+      <if test="controlerName != null">
+        #{controlerName,jdbcType=VARCHAR},
+      </if>
+      <if test="controlTaskOrderId != null">
+        #{controlTaskOrderId,jdbcType=INTEGER},
+      </if>
+      <if test="bfStudentid != null">
+        #{bfStudentid,jdbcType=INTEGER},
+      </if>
+      <if test="bfName != null">
+        #{bfName,jdbcType=VARCHAR},
+      </if>
+      <if test="claName != null">
+        #{claName,jdbcType=VARCHAR},
+      </if>
+      <if test="bfClassid != null">
+        #{bfClassid,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.wlh.springcloud.entities.T3Kaoqin">
+    update t3_kaoqin
+    <set>
+      <if test="kaoqingId != null">
+        kaoqing_id = #{kaoqingId,jdbcType=INTEGER},
+      </if>
+      <if test="qjTerm != null">
+        qj_term = #{qjTerm,jdbcType=VARCHAR},
+      </if>
+      <if test="datadatetime != null">
+        DataDateTime = #{datadatetime,jdbcType=VARCHAR},
+      </if>
+      <if test="controllerid != null">
+        ControllerID = #{controllerid,jdbcType=INTEGER},
+      </if>
+      <if test="controlerName != null">
+        controler_name = #{controlerName,jdbcType=VARCHAR},
+      </if>
+      <if test="controlTaskOrderId != null">
+        control_task_order_id = #{controlTaskOrderId,jdbcType=INTEGER},
+      </if>
+      <if test="bfStudentid != null">
+        bf_studentID = #{bfStudentid,jdbcType=INTEGER},
+      </if>
+      <if test="bfName != null">
+        bf_Name = #{bfName,jdbcType=VARCHAR},
+      </if>
+      <if test="claName != null">
+        cla_Name = #{claName,jdbcType=VARCHAR},
+      </if>
+      <if test="bfClassid != null">
+        bf_classid = #{bfClassid,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.wlh.springcloud.entities.T3Kaoqin">
+    update t3_kaoqin
+    set kaoqing_id = #{kaoqingId,jdbcType=INTEGER},
+      qj_term = #{qjTerm,jdbcType=VARCHAR},
+      DataDateTime = #{datadatetime,jdbcType=VARCHAR},
+      ControllerID = #{controllerid,jdbcType=INTEGER},
+      controler_name = #{controlerName,jdbcType=VARCHAR},
+      control_task_order_id = #{controlTaskOrderId,jdbcType=INTEGER},
+      bf_studentID = #{bfStudentid,jdbcType=INTEGER},
+      bf_Name = #{bfName,jdbcType=VARCHAR},
+      cla_Name = #{claName,jdbcType=VARCHAR},
+      bf_classid = #{bfClassid,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>
