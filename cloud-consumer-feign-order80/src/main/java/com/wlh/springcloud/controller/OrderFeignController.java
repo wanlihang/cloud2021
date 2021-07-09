@@ -1,7 +1,7 @@
 package com.wlh.springcloud.controller;
 
-import com.wlh.springcloud.entities.CommonResult;
-import com.wlh.springcloud.entities.Payment;
+import com.wlh.springcloud.entity.CommonResult;
+import com.wlh.springcloud.entity.Payment;
 import com.wlh.springcloud.service.PaymentFeignService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;

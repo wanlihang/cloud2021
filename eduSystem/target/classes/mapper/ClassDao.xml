@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wlh.springcloud.dao.ClassDao">
+  <resultMap id="BaseResultMap" type="com.wlh.springcloud.entity.Class">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="grade_id" jdbcType="INTEGER" property="gradeId" />
+    <result column="grade_name" jdbcType="VARCHAR" property="gradeName" />
+    <result column="class_id" jdbcType="INTEGER" property="classId" />
+    <result column="class_name" jdbcType="VARCHAR" property="className" />
+    <result column="student_number" jdbcType="INTEGER" property="studentNumber" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, grade_id, grade_name, class_id, class_name, student_number
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from class
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from class
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.wlh.springcloud.entity.Class" useGeneratedKeys="true">
+    insert into class (grade_id, grade_name, class_id,
+      class_name, student_number)
+    values (#{gradeId,jdbcType=INTEGER}, #{gradeName,jdbcType=VARCHAR}, #{classId,jdbcType=INTEGER},
+      #{className,jdbcType=VARCHAR}, #{studentNumber,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.wlh.springcloud.entity.Class" useGeneratedKeys="true">
+    insert into class
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="gradeId != null">
+        grade_id,
+      </if>
+      <if test="gradeName != null">
+        grade_name,
+      </if>
+      <if test="classId != null">
+        class_id,
+      </if>
+      <if test="className != null">
+        class_name,
+      </if>
+      <if test="studentNumber != null">
+        student_number,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="gradeId != null">
+        #{gradeId,jdbcType=INTEGER},
+      </if>
+      <if test="gradeName != null">
+        #{gradeName,jdbcType=VARCHAR},
+      </if>
+      <if test="classId != null">
+        #{classId,jdbcType=INTEGER},
+      </if>
+      <if test="className != null">
+        #{className,jdbcType=VARCHAR},
+      </if>
+      <if test="studentNumber != null">
+        #{studentNumber,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.wlh.springcloud.entity.Class">
+    update class
+    <set>
+      <if test="gradeId != null">
+        grade_id = #{gradeId,jdbcType=INTEGER},
+      </if>
+      <if test="gradeName != null">
+        grade_name = #{gradeName,jdbcType=VARCHAR},
+      </if>
+      <if test="classId != null">
+        class_id = #{classId,jdbcType=INTEGER},
+      </if>
+      <if test="className != null">
+        class_name = #{className,jdbcType=VARCHAR},
+      </if>
+      <if test="studentNumber != null">
+        student_number = #{studentNumber,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.wlh.springcloud.entity.Class">
+    update class
+    set grade_id = #{gradeId,jdbcType=INTEGER},
+      grade_name = #{gradeName,jdbcType=VARCHAR},
+      class_id = #{classId,jdbcType=INTEGER},
+      class_name = #{className,jdbcType=VARCHAR},
+      student_number = #{studentNumber,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

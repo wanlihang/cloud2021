@@ -1,10 +1,10 @@
 package com.wlh.springcloud.controller;
 
-import com.wlh.springcloud.entities.Pianke;
-import com.wlh.springcloud.entities.T2StudentInfo;
-import com.wlh.springcloud.entities.T5Chengji;
-import com.wlh.springcloud.service.T2StudentInfoService;
-import com.wlh.springcloud.service.T5ChengjiService;
+import com.wlh.springcloud.entity.Pianke;
+import com.wlh.springcloud.entity.Student;
+import com.wlh.springcloud.entity.StudentTranscripts;
+import com.wlh.springcloud.service.StudentService;
+import com.wlh.springcloud.service.StudentTranscriptsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,9 +18,9 @@ import java.util.List;
 @Controller
 public class piankeController {
     @Autowired
-    private T2StudentInfoService studentInfoService;
+    private StudentService studentService;
     @Autowired
-    private T5ChengjiService chengjiService;
+    private StudentTranscriptsService studentTranscriptsService;
     private Integer studentId;
 
     @RequestMapping("/pianke")
@@ -28,16 +28,16 @@ public class piankeController {
         // model.addAttribute("test", "就哈哈哈哈哈哈哈哈哈哈哈");
         studentId = s;
         //获取studentInfo
-        T2StudentInfo studentInfo = studentInfoService.selectByBfStudentId(studentId);
+        Student studentInfo = studentService.selectByBfStudentId(studentId);
         model.addAttribute("studentInfo", studentInfo);
-        int claId = studentInfo.getClaId();
+        int claId = studentInfo.getClassId();
         showPianke(model, claId);
 
         return "pianke";
     }
 
     private void showPianke(Model model, int claId) {
-        List<T2StudentInfo> studentInfoList = studentInfoService.selectByClaId(claId);
+        List<Student> studentInfoList = studentService.selectByClaId(claId);
         if(studentInfoList.isEmpty()){
             return;
         }
@@ -45,18 +45,18 @@ public class piankeController {
         List<Pianke> piankeList = new ArrayList<Pianke>();
         int scoreTotal[][] = new int[len][65];
         int num = 0;
-        for(T2StudentInfo studentInfo : studentInfoList){
-            List<T5Chengji> chengjiList = chengjiService.selectByStudentId(studentInfo.getBfStudentid());
+        for(Student studentInfo : studentInfoList){
+            List<StudentTranscripts> chengjiList = studentTranscriptsService.selectByStudentId(studentInfo.getStudentId());
             int score[] = new int[65];
             float dengdi[] = new float[65];
-            for(T5Chengji chengji1 : chengjiList){
+            for(StudentTranscripts chengji1 : chengjiList){
                 //选择最新的期中考试，由于期末考试无科目分类数据
-                if(chengji1.getExamType().equals(2) && chengji1.getExamTerm().equals("2018-2019-1")){
-                    score[chengji1.getMesSubId()] = chengji1.getMesScore();
-                    if(chengji1.getMesDengdi().isEmpty() || chengji1.getMesDengdi().equals("0")){//排除干扰
+                if(chengji1.getExamKindId().equals(2) && chengji1.getExamTerm().equals("2018-2019-1")){
+                    score[chengji1.getSubjectId()] = chengji1.getScore();
+                    if(chengji1.getDengdi().isEmpty() || chengji1.getDengdi().equals("0")){//排除干扰
                         continue;
                     }
-                    dengdi[chengji1.getMesSubId()] = Float.valueOf(chengji1.getMesDengdi());
+                    dengdi[chengji1.getSubjectId()] = Float.valueOf(chengji1.getDengdi());
                 }
             }
             //打标签
@@ -114,7 +114,7 @@ public class piankeController {
             }
             //偏科判断
             if(good >= (count/2 + 1) && poor >= 1){
-                piankeList.add(new Pianke(studentInfo.getBfName() + studentInfo.getBfStudentid(), temp));
+                piankeList.add(new Pianke(studentInfo.getStudentName() + studentInfo.getStudentId(), temp));
                 //System.out.println(score[1]);
                 for(int i = 0; i < 65; i++){
 

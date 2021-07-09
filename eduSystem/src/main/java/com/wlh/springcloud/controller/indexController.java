@@ -1,7 +1,7 @@
 package com.wlh.springcloud.controller;
 
-import com.wlh.springcloud.entities.T2StudentInfo;
-import com.wlh.springcloud.service.T2StudentInfoService;
+import com.wlh.springcloud.entity.Student;
+import com.wlh.springcloud.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,7 +13,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @Controller
 public class indexController {
     @Autowired
-    private T2StudentInfoService studentInfoService;
+    private StudentService studentService;
 
     private Integer studentId;
 
@@ -22,8 +22,8 @@ public class indexController {
         // model.addAttribute("test", "就哈哈哈哈哈哈哈哈哈哈哈");
         studentId = s;
         //获取studentInfo
-        T2StudentInfo studentInfo = studentInfoService.selectByBfStudentId(studentId);
-        model.addAttribute("studentInfo", studentInfo);
+        Student student = studentService.selectByBfStudentId(studentId);
+        model.addAttribute("student", student);
         return "index";
     }
 

@@ -1,7 +1,7 @@
 package com.wlh.springcloud.service;
 
 
-import com.wlh.springcloud.entities.Payment;
+import com.wlh.springcloud.entity.Payment;
 import org.apache.ibatis.annotations.Param;
 
 public interface PaymentService {

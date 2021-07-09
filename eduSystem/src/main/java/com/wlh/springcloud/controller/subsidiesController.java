@@ -1,9 +1,9 @@
 package com.wlh.springcloud.controller;
 
-import com.wlh.springcloud.entities.T2StudentInfo;
-import com.wlh.springcloud.entities.T7Consumption;
-import com.wlh.springcloud.service.T2StudentInfoService;
-import com.wlh.springcloud.service.T7ConsumptionService;
+import com.wlh.springcloud.entity.Student;
+import com.wlh.springcloud.entity.StudentConsumptionRecord;
+import com.wlh.springcloud.service.StudentConsumptionRecordService;
+import com.wlh.springcloud.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,9 +16,9 @@ import java.util.List;
 @Controller
 public class subsidiesController {
     @Autowired
-    private T2StudentInfoService studentInfoService;
+    private StudentService studentService;
     @Autowired
-    private T7ConsumptionService consumptionService;
+    private StudentConsumptionRecordService consumptionService;
     private Integer studentId;
 
     @RequestMapping("/subsidies")
@@ -26,9 +26,9 @@ public class subsidiesController {
         // model.addAttribute("test", "就哈哈哈哈哈哈哈哈哈哈哈");
         studentId = s;
         //获取studentInfo
-        T2StudentInfo studentInfo = studentInfoService.selectByBfStudentId(studentId);
+        Student studentInfo = studentService.selectByBfStudentId(studentId);
         model.addAttribute("studentInfo", studentInfo);
-        int claId = studentInfo.getClaId();
+        int claId = studentInfo.getClassId();
         showPoorStudent(model, claId);
 
         return "subsidies";
@@ -36,7 +36,7 @@ public class subsidiesController {
 
     public void showPoorStudent(Model model, int claId){
         int avgComsp = 2174;//计算出来的学期平均消费金额
-        List<T2StudentInfo> studentInfoList = studentInfoService.selectByClaId(claId);
+        List<Student> studentInfoList = studentService.selectByClaId(claId);
         if(studentInfoList.isEmpty()){
             return;
         }
@@ -45,18 +45,18 @@ public class subsidiesController {
         String name[] = new String[len];//记录学生姓名和id
         int count = 0;
         //得到班级学生消费金额（2018-2019-1学期）
-        for(T2StudentInfo studentInfo : studentInfoList){
+        for(Student studentInfo : studentInfoList){
             int temp = 0;
-            List<T7Consumption> consumptionList = consumptionService.selectByStudentId(studentInfo.getBfStudentid());
-            for(T7Consumption consumption : consumptionList){
-                String[] csplit = consumption.getDealtime().split("/");
+            List<StudentConsumptionRecord> consumptionList = consumptionService.selectByStudentId(studentInfo.getStudentId());
+            for(StudentConsumptionRecord consumption : consumptionList){
+                String[] csplit = consumption.getConsumptionTime().split("/");
                 int yue = Integer.valueOf(csplit[1]);
                 if(yue == 9 || yue == 10 || yue == 11 || yue == 12 || yue == 1){
-                    temp -= consumption.getMondeal();
+                    temp -= consumption.getAmount();
                 }
             }
             comsp[count] = temp;
-            name[count] = studentInfo.getBfName() + studentId;
+            name[count] = studentInfo.getStudentName() + studentId;
             count++;
         }
         int num = len/10 + 1;

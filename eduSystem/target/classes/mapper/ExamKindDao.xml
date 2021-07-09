@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wlh.springcloud.dao.ExamKindDao">
+  <resultMap id="BaseResultMap" type="com.wlh.springcloud.entity.ExamKind">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="exam_kind_id" jdbcType="INTEGER" property="examKindId" />
+    <result column="exam_kind_name" jdbcType="VARCHAR" property="examKindName" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, exam_kind_id, exam_kind_name
+  </sql>
+
+
+  <select id="getAllExamKind" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from exam_kind
+  </select>
+
+
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from exam_kind
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from exam_kind
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.wlh.springcloud.entity.ExamKind" useGeneratedKeys="true">
+    insert into exam_kind (exam_kind_id, exam_kind_name)
+    values (#{examKindId,jdbcType=INTEGER}, #{examKindName,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.wlh.springcloud.entity.ExamKind" useGeneratedKeys="true">
+    insert into exam_kind
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="examKindId != null">
+        exam_kind_id,
+      </if>
+      <if test="examKindName != null">
+        exam_kind_name,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="examKindId != null">
+        #{examKindId,jdbcType=INTEGER},
+      </if>
+      <if test="examKindName != null">
+        #{examKindName,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.wlh.springcloud.entity.ExamKind">
+    update exam_kind
+    <set>
+      <if test="examKindId != null">
+        exam_kind_id = #{examKindId,jdbcType=INTEGER},
+      </if>
+      <if test="examKindName != null">
+        exam_kind_name = #{examKindName,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.wlh.springcloud.entity.ExamKind">
+    update exam_kind
+    set exam_kind_id = #{examKindId,jdbcType=INTEGER},
+      exam_kind_name = #{examKindName,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

@@ -1,7 +1,7 @@
 package com.wlh.springcloud.service;
 
-import com.wlh.springcloud.entities.CommonResult;
-import com.wlh.springcloud.entities.Payment;
+import com.wlh.springcloud.entity.CommonResult;
+import com.wlh.springcloud.entity.Payment;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.GetMapping;

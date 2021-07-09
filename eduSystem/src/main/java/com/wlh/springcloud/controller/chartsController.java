@@ -1,13 +1,13 @@
 package com.wlh.springcloud.controller;
 
-import com.wlh.springcloud.entities.T2StudentInfo;
-import com.wlh.springcloud.entities.T3Kaoqin;
-import com.wlh.springcloud.entities.T5Chengji;
-import com.wlh.springcloud.entities.T7Consumption;
-import com.wlh.springcloud.service.T2StudentInfoService;
-import com.wlh.springcloud.service.T3KaoqinService;
-import com.wlh.springcloud.service.T5ChengjiService;
-import com.wlh.springcloud.service.T7ConsumptionService;
+import com.wlh.springcloud.entity.Attendance;
+import com.wlh.springcloud.entity.Student;
+import com.wlh.springcloud.entity.StudentConsumptionRecord;
+import com.wlh.springcloud.entity.StudentTranscripts;
+import com.wlh.springcloud.service.AttendanceService;
+import com.wlh.springcloud.service.StudentConsumptionRecordService;
+import com.wlh.springcloud.service.StudentService;
+import com.wlh.springcloud.service.StudentTranscriptsService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -21,22 +21,22 @@ import java.util.List;
 public class chartsController {
     private Integer studentId;
 
-    private T2StudentInfo studentInfo;
+    private Student student;
 
     @Resource
-    private T2StudentInfoService studentInfoService;
+    private StudentService studentService;
     @Resource
-    private T3KaoqinService kaoqinService;
+    private AttendanceService kaoqinService;
     @Resource
-    private T5ChengjiService chengjiService;
+    private StudentTranscriptsService chengjiService;
     @Resource
-    private T7ConsumptionService consumptionService;
+    private StudentConsumptionRecordService consumptionService;
 
     @RequestMapping("/charts")
     public String charts(@ModelAttribute("studentId") Integer s, Model model){
         studentId = s;
-        studentInfo = studentInfoService.selectByBfStudentId(studentId);
-        model.addAttribute("studentInfo", studentInfo);
+        student = studentService.selectByBfStudentId(studentId);
+        model.addAttribute("student", student);
         showChengji(model);
         showKaoqin(model);
         showConsumption(model);
@@ -46,18 +46,18 @@ public class chartsController {
 
     public void showChengji(Model model){
         //获取自己的成绩信息（每年单独列出）
-        List<T5Chengji> chengjiList = chengjiService.selectByStudentId(studentId);
+        List<StudentTranscripts> chengjiList = chengjiService.selectByStudentId(studentId);
         int score[] = new int[65];
         int testID[] = new int[65];//记录考试编码
         float dengdi[] = new float[65];
-        for(T5Chengji chengji1 : chengjiList){
-            if(chengji1.getExamType().equals(2)){
-                score[chengji1.getMesSubId()] = chengji1.getMesScore();
-                testID[chengji1.getMesSubId()] = chengji1.getMesTestid();
-                if(chengji1.getMesDengdi().isEmpty()){
+        for(StudentTranscripts chengji1 : chengjiList){
+            if(chengji1.getExamKindId().equals(2)){
+                score[chengji1.getSubjectId()] = chengji1.getScore();
+                testID[chengji1.getSubjectId()] = chengji1.getTestId();
+                if(chengji1.getDengdi().isEmpty()){
                     continue;
                 }
-                dengdi[chengji1.getMesSubId()] = Float.valueOf(chengji1.getMesDengdi());
+                dengdi[chengji1.getSubjectId()] = Float.valueOf(chengji1.getDengdi());
             }
         }
         model.addAttribute("score", score);
@@ -136,11 +136,11 @@ public class chartsController {
 
     public void showKaoqin(Model model){
         //获取自己的考勤信息
-        List<T3Kaoqin> kaoqinList = kaoqinService.selectByStudentId(studentId);
+        List<Attendance> kaoqinList = kaoqinService.selectByStudentId(studentId);
         int kaoqinCount[] = new int[5];//0-4分别为正常进校、离校、迟到、早退、未穿校服
         int count = 0;
-        for(T3Kaoqin kaoqin1 : kaoqinList) {
-            int temp = kaoqin1.getControllerid();
+        for(Attendance kaoqin1 : kaoqinList) {
+            int temp = kaoqin1.getControllerId();
             if (temp == 1001 || temp == 99001) {
                 kaoqinCount[2]++;
             }
@@ -180,23 +180,23 @@ public class chartsController {
 
     public void showConsumption(Model model){
         //获取自己的消费信息
-        List<T7Consumption> consumptionList = consumptionService.selectByStudentId(studentId);
+        List<StudentConsumptionRecord> consumptionList = consumptionService.selectByStudentId(studentId);
         //月消费额
         int comsp[] = new int[15];
         int comspCount[] = new int[15];
         //日消费额
         int comspDay[][] = new int[15][32];
         int comspDayCount[][] = new int[15][32];
-        for(T7Consumption consumption1 : consumptionList){
-            String[] splitTemp = consumption1.getDealtime().split(" ");//拿出年/月/日
+        for(StudentConsumptionRecord consumption1 : consumptionList){
+            String[] splitTemp = consumption1.getConsumptionTime().split(" ");//拿出年/月/日
             String[] dealDate = splitTemp[0].split("/");
 
             int month = Integer.valueOf(dealDate[1]);
             int day = Integer.valueOf(dealDate[2]);
 
-            comsp[month] -= consumption1.getMondeal();//转为正数
+            comsp[month] -= consumption1.getAmount();//转为正数
             comspCount[month]++;//月消费次数
-            comspDay[month][day] -= consumption1.getMondeal();//转为正数
+            comspDay[month][day] -= consumption1.getAmount();//转为正数
             comspDayCount[month][day]++;//日消费次数
         }
         model.addAttribute("comsp", comsp);

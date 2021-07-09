@@ -7,5 +7,12 @@
       <jdbc-driver>com.mysql.cj.jdbc.Driver</jdbc-driver>
       <jdbc-url>jdbc:mysql://192.168.102.42:3306/db2021</jdbc-url>
     </data-source>
+    <data-source source="LOCAL" name="120.79.80.74" uuid="4028ff4e-bbcb-4b86-991a-1e2733449beb">
+      <driver-ref>mysql.8</driver-ref>
+      <synchronize>true</synchronize>
+      <remarks>阿里云服务器</remarks>
+      <jdbc-driver>com.mysql.cj.jdbc.Driver</jdbc-driver>
+      <jdbc-url>jdbc:mysql://120.79.80.74:3306</jdbc-url>
+    </data-source>
   </component>
 </project>

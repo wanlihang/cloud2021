@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wlh.springcloud.dao.StudentTranscriptsDao">
+  <resultMap id="BaseResultMap" type="com.wlh.springcloud.entity.StudentTranscripts">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="student_id" jdbcType="INTEGER" property="studentId" />
+    <result column="class_id" jdbcType="INTEGER" property="classId" />
+    <result column="exam_term" jdbcType="VARCHAR" property="examTerm" />
+    <result column="test_id" jdbcType="INTEGER" property="testId" />
+    <result column="subject_id" jdbcType="INTEGER" property="subjectId" />
+    <result column="exam_id" jdbcType="INTEGER" property="examId" />
+    <result column="exam_kind_id" jdbcType="INTEGER" property="examKindId" />
+    <result column="exam_date" jdbcType="VARCHAR" property="examDate" />
+    <result column="score" jdbcType="INTEGER" property="score" />
+    <result column="z_score" jdbcType="VARCHAR" property="zScore" />
+    <result column="t_score" jdbcType="VARCHAR" property="tScore" />
+    <result column="dengdi" jdbcType="VARCHAR" property="dengdi" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, student_id, class_id, exam_term, test_id, subject_id, exam_id, exam_kind_id,
+    exam_date, score, z_score, t_score, dengdi
+  </sql>
+
+
+  <select id="getAllChengjiFromClaIds" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from student_transcripts
+    where cla_id IN #{claIds,jdbcType=INTEGER}
+  </select>
+  <select id="getScoreFromStuList" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from student_transcripts
+    where mes_StudentID IN #{studentIdList,jdbcType=INTEGER} AND mes_sub_id = #{subId,jdbcType=INTEGER} AND exam_number = #{examNumber,jdbcType=INTEGER}
+  </select>
+  <select id="getAllChengji" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from student_transcripts
+  </select>
+  <select id="selectByStudentId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from student_transcripts
+    where mes_StudentID = #{studentId,jdbcType=INTEGER}
+  </select>
+  <select id="selectByClaId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from student_transcripts
+    where cla_id = #{claId,jdbcType=INTEGER}
+  </select>
+  <select id="selectByExamKindId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from student_transcripts
+    where exam_type = #{examKindId,jdbcType=INTEGER}
+  </select>
+  <select id="selectByExamId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from student_transcripts
+    where exam_number = #{examId,jdbcType=INTEGER}
+  </select>
+  <select id="selectBySubjectId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from student_transcripts
+    where mes_sub_id = #{subjectId,jdbcType=INTEGER}
+  </select>
+  <select id="selectByExamIdAndStuId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from student_transcripts
+    where exam_number = #{examId,jdbcType=INTEGER} AND mes_StudentID = #{stuId,jdbcType=INTEGER}
+  </select>
+  <select id="selectByTestId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from student_transcripts
+    where mes_TestID = #{testId,jdbcType=INTEGER}
+  </select>
+
+
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from student_transcripts
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from student_transcripts
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.wlh.springcloud.entity.StudentTranscripts" useGeneratedKeys="true">
+    insert into student_transcripts (student_id, class_id, exam_term,
+      test_id, subject_id, exam_id,
+      exam_kind_id, exam_date, score,
+      z_score, t_score, dengdi
+      )
+    values (#{studentId,jdbcType=INTEGER}, #{classId,jdbcType=INTEGER}, #{examTerm,jdbcType=VARCHAR},
+      #{testId,jdbcType=INTEGER}, #{subjectId,jdbcType=INTEGER}, #{examId,jdbcType=INTEGER},
+      #{examKindId,jdbcType=INTEGER}, #{examDate,jdbcType=VARCHAR}, #{score,jdbcType=INTEGER},
+      #{zScore,jdbcType=VARCHAR}, #{tScore,jdbcType=VARCHAR}, #{dengdi,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.wlh.springcloud.entity.StudentTranscripts" useGeneratedKeys="true">
+    insert into student_transcripts
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="studentId != null">
+        student_id,
+      </if>
+      <if test="classId != null">
+        class_id,
+      </if>
+      <if test="examTerm != null">
+        exam_term,
+      </if>
+      <if test="testId != null">
+        test_id,
+      </if>
+      <if test="subjectId != null">
+        subject_id,
+      </if>
+      <if test="examId != null">
+        exam_id,
+      </if>
+      <if test="examKindId != null">
+        exam_kind_id,
+      </if>
+      <if test="examDate != null">
+        exam_date,
+      </if>
+      <if test="score != null">
+        score,
+      </if>
+      <if test="zScore != null">
+        z_score,
+      </if>
+      <if test="tScore != null">
+        t_score,
+      </if>
+      <if test="dengdi != null">
+        dengdi,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="studentId != null">
+        #{studentId,jdbcType=INTEGER},
+      </if>
+      <if test="classId != null">
+        #{classId,jdbcType=INTEGER},
+      </if>
+      <if test="examTerm != null">
+        #{examTerm,jdbcType=VARCHAR},
+      </if>
+      <if test="testId != null">
+        #{testId,jdbcType=INTEGER},
+      </if>
+      <if test="subjectId != null">
+        #{subjectId,jdbcType=INTEGER},
+      </if>
+      <if test="examId != null">
+        #{examId,jdbcType=INTEGER},
+      </if>
+      <if test="examKindId != null">
+        #{examKindId,jdbcType=INTEGER},
+      </if>
+      <if test="examDate != null">
+        #{examDate,jdbcType=VARCHAR},
+      </if>
+      <if test="score != null">
+        #{score,jdbcType=INTEGER},
+      </if>
+      <if test="zScore != null">
+        #{zScore,jdbcType=VARCHAR},
+      </if>
+      <if test="tScore != null">
+        #{tScore,jdbcType=VARCHAR},
+      </if>
+      <if test="dengdi != null">
+        #{dengdi,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.wlh.springcloud.entity.StudentTranscripts">
+    update student_transcripts
+    <set>
+      <if test="studentId != null">
+        student_id = #{studentId,jdbcType=INTEGER},
+      </if>
+      <if test="classId != null">
+        class_id = #{classId,jdbcType=INTEGER},
+      </if>
+      <if test="examTerm != null">
+        exam_term = #{examTerm,jdbcType=VARCHAR},
+      </if>
+      <if test="testId != null">
+        test_id = #{testId,jdbcType=INTEGER},
+      </if>
+      <if test="subjectId != null">
+        subject_id = #{subjectId,jdbcType=INTEGER},
+      </if>
+      <if test="examId != null">
+        exam_id = #{examId,jdbcType=INTEGER},
+      </if>
+      <if test="examKindId != null">
+        exam_kind_id = #{examKindId,jdbcType=INTEGER},
+      </if>
+      <if test="examDate != null">
+        exam_date = #{examDate,jdbcType=VARCHAR},
+      </if>
+      <if test="score != null">
+        score = #{score,jdbcType=INTEGER},
+      </if>
+      <if test="zScore != null">
+        z_score = #{zScore,jdbcType=VARCHAR},
+      </if>
+      <if test="tScore != null">
+        t_score = #{tScore,jdbcType=VARCHAR},
+      </if>
+      <if test="dengdi != null">
+        dengdi = #{dengdi,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.wlh.springcloud.entity.StudentTranscripts">
+    update student_transcripts
+    set student_id = #{studentId,jdbcType=INTEGER},
+      class_id = #{classId,jdbcType=INTEGER},
+      exam_term = #{examTerm,jdbcType=VARCHAR},
+      test_id = #{testId,jdbcType=INTEGER},
+      subject_id = #{subjectId,jdbcType=INTEGER},
+      exam_id = #{examId,jdbcType=INTEGER},
+      exam_kind_id = #{examKindId,jdbcType=INTEGER},
+      exam_date = #{examDate,jdbcType=VARCHAR},
+      score = #{score,jdbcType=INTEGER},
+      z_score = #{zScore,jdbcType=VARCHAR},
+      t_score = #{tScore,jdbcType=VARCHAR},
+      dengdi = #{dengdi,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wlh.springcloud.dao.StudentDao">
+  <resultMap id="BaseResultMap" type="com.wlh.springcloud.entity.Student">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="student_id" jdbcType="INTEGER" property="studentId" />
+    <result column="student_name" jdbcType="VARCHAR" property="studentName" />
+    <result column="gender" jdbcType="VARCHAR" property="gender" />
+    <result column="nation" jdbcType="VARCHAR" property="nation" />
+    <result column="birth_year" jdbcType="VARCHAR" property="birthYear" />
+    <result column="native_place" jdbcType="VARCHAR" property="nativePlace" />
+    <result column="residence_type" jdbcType="VARCHAR" property="residenceType" />
+    <result column="policy" jdbcType="VARCHAR" property="policy" />
+    <result column="grade_id" jdbcType="INTEGER" property="gradeId" />
+    <result column="class_id" jdbcType="INTEGER" property="classId" />
+    <result column="qinshihao" jdbcType="INTEGER" property="qinshihao" />
+    <result column="is_zhusu" jdbcType="INTEGER" property="isZhusu" />
+    <result column="is_leave_school" jdbcType="INTEGER" property="isLeaveSchool" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, student_id, student_name, gender, nation, birth_year, native_place, residence_type,
+    policy, grade_id, class_id, qinshihao, is_zhusu, is_leave_school
+  </sql>
+
+
+  <select id="selectByStudentId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from student
+    where student_id = #{studentId,jdbcType=INTEGER}
+  </select>
+  <select id="selectByClaId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from student
+    where class_id = #{claId,jdbcType=INTEGER}
+  </select>
+  <select id="getAllStudent" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from student
+  </select>
+
+
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from student
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from student
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.wlh.springcloud.entity.Student" useGeneratedKeys="true">
+    insert into student (student_id, student_name, gender,
+      nation, birth_year, native_place,
+      residence_type, policy, grade_id,
+      class_id, qinshihao, is_zhusu,
+      is_leave_school)
+    values (#{studentId,jdbcType=INTEGER}, #{studentName,jdbcType=VARCHAR}, #{gender,jdbcType=VARCHAR},
+      #{nation,jdbcType=VARCHAR}, #{birthYear,jdbcType=VARCHAR}, #{nativePlace,jdbcType=VARCHAR},
+      #{residenceType,jdbcType=VARCHAR}, #{policy,jdbcType=VARCHAR}, #{gradeId,jdbcType=INTEGER},
+      #{classId,jdbcType=INTEGER}, #{qinshihao,jdbcType=INTEGER}, #{isZhusu,jdbcType=INTEGER},
+      #{isLeaveSchool,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.wlh.springcloud.entity.Student" useGeneratedKeys="true">
+    insert into student
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="studentId != null">
+        student_id,
+      </if>
+      <if test="studentName != null">
+        student_name,
+      </if>
+      <if test="gender != null">
+        gender,
+      </if>
+      <if test="nation != null">
+        nation,
+      </if>
+      <if test="birthYear != null">
+        birth_year,
+      </if>
+      <if test="nativePlace != null">
+        native_place,
+      </if>
+      <if test="residenceType != null">
+        residence_type,
+      </if>
+      <if test="policy != null">
+        policy,
+      </if>
+      <if test="gradeId != null">
+        grade_id,
+      </if>
+      <if test="classId != null">
+        class_id,
+      </if>
+      <if test="qinshihao != null">
+        qinshihao,
+      </if>
+      <if test="isZhusu != null">
+        is_zhusu,
+      </if>
+      <if test="isLeaveSchool != null">
+        is_leave_school,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="studentId != null">
+        #{studentId,jdbcType=INTEGER},
+      </if>
+      <if test="studentName != null">
+        #{studentName,jdbcType=VARCHAR},
+      </if>
+      <if test="gender != null">
+        #{gender,jdbcType=VARCHAR},
+      </if>
+      <if test="nation != null">
+        #{nation,jdbcType=VARCHAR},
+      </if>
+      <if test="birthYear != null">
+        #{birthYear,jdbcType=VARCHAR},
+      </if>
+      <if test="nativePlace != null">
+        #{nativePlace,jdbcType=VARCHAR},
+      </if>
+      <if test="residenceType != null">
+        #{residenceType,jdbcType=VARCHAR},
+      </if>
+      <if test="policy != null">
+        #{policy,jdbcType=VARCHAR},
+      </if>
+      <if test="gradeId != null">
+        #{gradeId,jdbcType=INTEGER},
+      </if>
+      <if test="classId != null">
+        #{classId,jdbcType=INTEGER},
+      </if>
+      <if test="qinshihao != null">
+        #{qinshihao,jdbcType=INTEGER},
+      </if>
+      <if test="isZhusu != null">
+        #{isZhusu,jdbcType=INTEGER},
+      </if>
+      <if test="isLeaveSchool != null">
+        #{isLeaveSchool,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.wlh.springcloud.entity.Student">
+    update student
+    <set>
+      <if test="studentId != null">
+        student_id = #{studentId,jdbcType=INTEGER},
+      </if>
+      <if test="studentName != null">
+        student_name = #{studentName,jdbcType=VARCHAR},
+      </if>
+      <if test="gender != null">
+        gender = #{gender,jdbcType=VARCHAR},
+      </if>
+      <if test="nation != null">
+        nation = #{nation,jdbcType=VARCHAR},
+      </if>
+      <if test="birthYear != null">
+        birth_year = #{birthYear,jdbcType=VARCHAR},
+      </if>
+      <if test="nativePlace != null">
+        native_place = #{nativePlace,jdbcType=VARCHAR},
+      </if>
+      <if test="residenceType != null">
+        residence_type = #{residenceType,jdbcType=VARCHAR},
+      </if>
+      <if test="policy != null">
+        policy = #{policy,jdbcType=VARCHAR},
+      </if>
+      <if test="gradeId != null">
+        grade_id = #{gradeId,jdbcType=INTEGER},
+      </if>
+      <if test="classId != null">
+        class_id = #{classId,jdbcType=INTEGER},
+      </if>
+      <if test="qinshihao != null">
+        qinshihao = #{qinshihao,jdbcType=INTEGER},
+      </if>
+      <if test="isZhusu != null">
+        is_zhusu = #{isZhusu,jdbcType=INTEGER},
+      </if>
+      <if test="isLeaveSchool != null">
+        is_leave_school = #{isLeaveSchool,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.wlh.springcloud.entity.Student">
+    update student
+    set student_id = #{studentId,jdbcType=INTEGER},
+      student_name = #{studentName,jdbcType=VARCHAR},
+      gender = #{gender,jdbcType=VARCHAR},
+      nation = #{nation,jdbcType=VARCHAR},
+      birth_year = #{birthYear,jdbcType=VARCHAR},
+      native_place = #{nativePlace,jdbcType=VARCHAR},
+      residence_type = #{residenceType,jdbcType=VARCHAR},
+      policy = #{policy,jdbcType=VARCHAR},
+      grade_id = #{gradeId,jdbcType=INTEGER},
+      class_id = #{classId,jdbcType=INTEGER},
+      qinshihao = #{qinshihao,jdbcType=INTEGER},
+      is_zhusu = #{isZhusu,jdbcType=INTEGER},
+      is_leave_school = #{isLeaveSchool,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

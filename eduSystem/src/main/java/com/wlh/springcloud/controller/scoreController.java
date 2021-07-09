@@ -1,9 +1,9 @@
 package com.wlh.springcloud.controller;
 
-import com.wlh.springcloud.entities.T2StudentInfo;
-import com.wlh.springcloud.entities.T5Chengji;
-import com.wlh.springcloud.service.T2StudentInfoService;
-import com.wlh.springcloud.service.T5ChengjiService;
+import com.wlh.springcloud.entity.Student;
+import com.wlh.springcloud.entity.StudentTranscripts;
+import com.wlh.springcloud.service.StudentService;
+import com.wlh.springcloud.service.StudentTranscriptsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,40 +16,24 @@ import java.util.List;
 @Controller
 public class scoreController {
     @Autowired
-    private T2StudentInfoService studentInfoService;
+    private StudentService studentService;
     @Autowired
-    private T5ChengjiService chengjiService;
+    private StudentTranscriptsService studentTranscriptsService;
     private Integer studentId;
 
     @RequestMapping("/score")
     public String score(@ModelAttribute("studentId") Integer s, Model model){
         studentId = s;
         //获取studentInfo
-        T2StudentInfo studentInfo = studentInfoService.selectByBfStudentId(studentId);
-        model.addAttribute("studentInfo", studentInfo);
-        int flag = 0;
-        flag = getFlag(studentInfo, flag);
-        //分高一高二高三
-        showHistoryScore(model, flag);
+        Student student = studentService.selectByBfStudentId(studentId);
+        model.addAttribute("studentInfo", student);
+        showHistoryScore(model, student.getGradeId());
 
         return "score";
     }
 
-    static int getFlag(T2StudentInfo studentInfo, int flag) {
-        if(studentInfo.getClaName().contains("高一")){
-            flag = 1;
-        }
-        else if(studentInfo.getClaName().contains("高二")){
-            flag = 2;
-        }
-        else if(studentInfo.getClaName().contains("高三")){
-            flag = 3;
-        }
-        return flag;
-    }
-
     private void showHistoryScore(Model model, int flag) {
-        List<T5Chengji> chengjiList = chengjiService.selectByStudentId(studentId);
+        List<StudentTranscripts> chengjiList = studentTranscriptsService.selectByStudentId(studentId);
         //最多5个学期
 
         int score[][] = new int[30][65];//语文-技术10门课程分数
@@ -58,17 +42,17 @@ public class scoreController {
         int count[] = new int[65];//记录每门课程的成绩数
         int prediction[] = new int[65];//记录每门课程的预测分数
 
-        for(T5Chengji chengji1 : chengjiList) {
+        for(StudentTranscripts chengji1 : chengjiList) {
             //无课程号、或无学期、或无分数则不记录
-            if (chengji1.getMesSubId().equals(0) || chengji1.getExamTerm().isEmpty() || chengji1.getMesTScore().isEmpty()) {
+            if (chengji1.getSubjectId().equals(0) || chengji1.getExamTerm().isEmpty() || chengji1.getTScore().isEmpty()) {
                 continue;
             }
 
-            int subId = chengji1.getMesSubId();
-            int examType = chengji1.getExamType();
-            int sco = Float.valueOf(chengji1.getMesTScore()).intValue();
+            int subId = chengji1.getSubjectId();
+            int examType = chengji1.getExamKindId();
+            int sco = Float.valueOf(chengji1.getTScore()).intValue();
             //去掉00:00:00
-            String dsplit[] = chengji1.getExamSdate().split(" ");
+            String dsplit[] = chengji1.getExamDate().split(" ");
             String date = dsplit[0];
 
             if(flag == 1){

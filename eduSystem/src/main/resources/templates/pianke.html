@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>学生画像系统</title>
+    <!-- 引入css -->
+    <link rel="stylesheet" th:href="@{css/bootstrap.min.css}" />
+    <link rel="stylesheet" th:href="@{css/bootstrap-responsive.min.css}" />
+    <link rel="stylesheet" th:href="@{css/matrix-style.css}" />
+    <link rel="stylesheet" th:href="@{css/matrix-media.css}" />
+    <!-- 引入js -->
+    <script type="text/javascript" th:src="@{js/jquery.min.js}"></script>
+    <script type="text/javascript" th:src="@{js/jquery.ui.custom.js}"></script>
+    <script type="text/javascript" th:src="@{js/bootstrap.min.js}"></script>
+    <script type="text/javascript" th:src="@{js/matrix.js}"></script>
+    <script type="text/javascript" th:src="@{js/select2.min.js}"></script>
+    <script type="text/javascript" th:src="@{js/echarts.min.js}"></script>
+</head>
+
+<body>
+<!--Header-part-->
+<div id="header">
+    <h1><a href="dashboard.html">首页</a></h1>
+</div>
+<!--close-Header-part-->
+
+<!--top-Header-menu-->
+<div id="user-nav" class="navbar navbar-inverse">
+    <ul class="nav">
+        <li class="dropdown" id="profile-messages">
+            <a title="" href="#">
+                <i class="icon icon-user"></i>
+                <span class="text" th:text="'欢迎，' + ${studentInfo.getBfName()}">欢迎，xxx</span>
+            </a>
+        </li>
+        <li class="">
+            <a title="" href="login">
+                <i class="icon icon-share-alt"></i>
+                <span class="text">退出</span>
+            </a>
+        </li>
+    </ul>
+</div>
+<!--close-top-Header-menu-->
+
+<!--start-top-serch-->
+<div id="search">
+    <input type="text" placeholder="输入搜索内容..." />
+    <button type="submit" class="tip-bottom" title="Search"><i class="icon-search icon-white"></i></button>
+</div>
+<!--close-top-serch-->
+
+<!--sidebar-menu-->
+<div id="sidebar"><a href="#" class="visible-phone"><i class="icon icon-home"></i> 控制台</a>
+    <ul>
+        <li><a href="/pitoIndex"><i class="icon icon-home"></i> <span>首页</span></a> </li>
+
+        <li> <a href="/pitoCharts"><i class="icon icon-eye-open"></i> <span>个人画像</span></a> </li>
+
+        <li class="submenu">
+            <a href="#"><i class="icon icon-th-list"></i> <span>工具</span> </a>
+            <ul>
+                <li><a href="/pitoScore">成绩预测</a></li>
+                <li><a href="/pitoChoice">七选三参考</a></li>
+                <li><a href="/pitoProfile">学生群像</a></li>
+                <li class="active"><a href="#">偏科生辅导</a></li>
+                <li><a href="/pitoSubsidies">贫困生补助</a></li>
+                <li><a href="/pitoXuefeng">学风分析报告</a></li>
+            </ul>
+        </li>
+    </ul>
+</div>
+<!--sidebar-menu-->
+
+<!--main-container-part-->
+<div id="content">
+    <!--breadcrumbs-->
+    <div id="content-header">
+        <div id="breadcrumb">
+            <a href="#" title="Go to Home" class="tip-bottom"><i class="icon-home"></i>首页</a>
+            <a href="#" class="current">工具-偏科生辅导</a>
+        </div>
+        <h1>偏科生辅导</h1>
+    </div>
+    <div class="container-fluid">
+        <hr>
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="widget-box">
+                    <div class="widget-title"> <span class="icon"> <i class="icon-book"></i> </span>
+                        <h5>按照成绩标签，获得总学科一半以上的B标签，且存在D及以下标签的学生存在偏科现象</h5>
+                    </div>
+                    <div class="widget-content nopadding">
+                        <table class="table table-bordered table-striped">
+                            <thead>
+                            <tr>
+                                <th>偏科学生汇总参考</th>
+                            </tr>
+                            </thead>
+                        </table>
+                        <table class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th>学生姓名</th>
+                                    <th>偏科科目</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="pianke,piankeStat:${piankeList}">
+                                    <td th:onclick="'javascript:showScore(' + ${piankeStat.index} + ')'" th:text="${pianke.getPiankeStu()}">
+                                        学生姓名
+                                    </td>
+                                    <td th:text="${pianke.getPiankeSub()}">偏科科目</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+                    <div id="pianke" style="width: auto;height:400px;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript" th:inline="javascript">
+    var scoreTotal = [[${scoreTotal}]];
+    var piankeChart = echarts.init(document.getElementById('pianke'));
+
+    function showScore(index){
+        var sco = new Array();
+        sco[0] = scoreTotal[index][1];
+        sco[1] = scoreTotal[index][2];
+        sco[2] = scoreTotal[index][3];
+        sco[3] = scoreTotal[index][4];
+        sco[4] = scoreTotal[index][5];
+        sco[5] = scoreTotal[index][6];
+        sco[6] = scoreTotal[index][7];
+        sco[7] = scoreTotal[index][8];
+        sco[8] = scoreTotal[index][17];
+        sco[9] = scoreTotal[index][59];
+        piankeChart.setOption(
+            {
+                tooltip: {},
+                radar: {
+                    // shape: 'circle',
+                    name: {
+                        textStyle: {
+                            color: '#fff',
+                            backgroundColor: '#339599',
+                            borderRadius: 3,
+                            padding: [3, 5]
+                        }
+                    },
+                    indicator: [
+                        { name: '语文', max: 100},
+                        { name: '数学', max: 100},
+                        { name: '英语', max: 100},
+                        { name: '物理', max: 100},
+                        { name: '化学', max: 100},
+                        { name: '生物', max: 100},
+                        { name: '地理', max: 100},
+                        { name: '历史', max: 100},
+                        { name: '政治', max: 100},
+                        { name: '技术', max: 100}
+                    ]
+                },
+                series: [{
+                    tooltip: {
+                        trigger: 'item'
+                    },
+                    areaStyle: {},
+                    name: '成绩',
+                    type: 'radar',
+                    // areaStyle: {normal: {}},
+                    data: [
+                        {
+                            value: sco,
+                            name: '成绩',
+                            label: {
+                                show: true
+                            }
+                        }
+
+                    ]
+                }]
+            }
+        )
+    }
+    window.onresize = function() {
+        yuceChart.resize();
+    };
+
+
+</script>
+
+
+</body>
+
+</html>

@@ -1,8 +1,8 @@
 package com.wlh.springcloud.controller;
 
 import com.wlh.springcloud.lb.LoadBalancer;
-import com.wlh.springcloud.entities.CommonResult;
-import com.wlh.springcloud.entities.Payment;
+import com.wlh.springcloud.entity.CommonResult;
+import com.wlh.springcloud.entity.Payment;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;

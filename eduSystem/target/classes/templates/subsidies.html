@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>学生画像系统</title>
+    <!-- 引入css -->
+    <link rel="stylesheet" th:href="@{css/bootstrap.min.css}" />
+    <link rel="stylesheet" th:href="@{css/bootstrap-responsive.min.css}" />
+    <link rel="stylesheet" th:href="@{css/matrix-style.css}" />
+    <link rel="stylesheet" th:href="@{css/matrix-media.css}" />
+    <!-- 引入js -->
+    <script type="text/javascript" th:src="@{js/jquery.min.js}"></script>
+    <script type="text/javascript" th:src="@{js/jquery.ui.custom.js}"></script>
+    <script type="text/javascript" th:src="@{js/bootstrap.min.js}"></script>
+    <script type="text/javascript" th:src="@{js/matrix.js}"></script>
+    <script type="text/javascript" th:src="@{js/select2.min.js}"></script>
+    <script type="text/javascript" th:src="@{js/echarts.min.js}"></script>
+</head>
+
+<body>
+<!--Header-part-->
+<div id="header">
+    <h1><a href="dashboard.html">首页</a></h1>
+</div>
+<!--close-Header-part-->
+
+<!--top-Header-menu-->
+<div id="user-nav" class="navbar navbar-inverse">
+    <ul class="nav">
+        <li class="dropdown" id="profile-messages">
+            <a title="" href="#">
+                <i class="icon icon-user"></i>
+                <span class="text" th:text="'欢迎，' + ${studentInfo.getBfName()}">欢迎，xxx</span>
+            </a>
+        </li>
+        <li class="">
+            <a title="" href="login">
+                <i class="icon icon-share-alt"></i>
+                <span class="text">退出</span>
+            </a>
+        </li>
+    </ul>
+</div>
+<!--close-top-Header-menu-->
+
+<!--start-top-serch-->
+<div id="search">
+    <input type="text" placeholder="输入搜索内容..." />
+    <button type="submit" class="tip-bottom" title="Search"><i class="icon-search icon-white"></i></button>
+</div>
+<!--close-top-serch-->
+
+<!--sidebar-menu-->
+<div id="sidebar"><a href="#" class="visible-phone"><i class="icon icon-home"></i> 控制台</a>
+    <ul>
+        <li><a href="/sutoIndex"><i class="icon icon-home"></i> <span>首页</span></a> </li>
+
+        <li> <a href="/sutoCharts"><i class="icon icon-eye-open"></i> <span>个人画像</span></a> </li>
+
+        <li class="submenu">
+            <a href="#"><i class="icon icon-th-list"></i> <span>工具</span> </a>
+            <ul>
+                <li><a href="/sutoScore">成绩预测</a></li>
+                <li><a href="/sutoChoice">七选三参考</a></li>
+                <li><a href="/sutoProfile">学生群像</a></li>
+                <li><a href="/sutoPianke">偏科生辅导</a></li>
+                <li class="active"><a href="#">贫困生补助</a></li>
+                <li><a href="/sutoXuefeng">学风分析报告</a></li>
+            </ul>
+        </li>
+    </ul>
+</div>
+<!--sidebar-menu-->
+
+<!--main-container-part-->
+<div id="content">
+    <!--breadcrumbs-->
+    <div id="content-header">
+        <div id="breadcrumb">
+            <a href="#" title="Go to Home" class="tip-bottom"><i class="icon-home"></i>首页</a>
+            <a href="#" class="current">工具-贫困生补助</a>
+        </div>
+        <h1>贫困生补助</h1>
+    </div>
+    <div class="container-fluid">
+        <hr>
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="widget-box">
+                    <div class="widget-title"> <span class="icon"> <i class="icon-book"></i> </span>
+                        <h5>选择一学期消费金额最低的10%，且成绩在班级前50%的学生</h5>
+                    </div>
+                    <div style="width: auto;height:100px;text-align: center">
+                        <h3>贫困补助金额参考<br><span th:text="${buzhu}">23</span></h3>
+                    </div>
+                    <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+                    <div id="pinkun" style="width: auto;height:400px;"></div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" th:inline="javascript">
+    var min = [[${min}]];
+    var minTip = [[${minTip}]];
+    var avg = [[${avg}]];
+    var pinkunChart = echarts.init(document.getElementById("pinkun"));
+    pinkunChart.setOption(
+        {
+            legend: {
+                data: ['贫困生消费额', '消费平均额']
+            },
+            yAxis: {
+                type: 'value'
+            },
+            xAxis: {
+                type: 'category',
+                data: minTip
+            },
+            series: [{
+                label: {
+                    show: true,
+                    position: 'inside'
+                },
+                name: '贫困生消费额',
+                type: 'bar',
+                data: min
+            },
+                {
+                    label: {
+                        show: true,
+                        position: 'inside'
+                    },
+                    name: '消费平均额',
+                    type: 'bar',
+                    data: avg
+                }
+            ]
+        }
+    )
+
+    window.onresize = function() {
+        pinkunChart.resize();
+    };
+
+</script>
+</body>
+
+</html>

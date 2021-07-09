@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>学生画像系统</title>
+    <!-- 引入css -->
+    <link rel="stylesheet" th:href="@{css/bootstrap.min.css}" />
+    <link rel="stylesheet" th:href="@{css/bootstrap-responsive.min.css}" />
+    <link rel="stylesheet" th:href="@{css/matrix-style.css}" />
+    <link rel="stylesheet" th:href="@{css/matrix-media.css}" />
+    <!-- 引入js -->
+    <script type="text/javascript" th:src="@{js/jquery.min.js}"></script>
+    <script type="text/javascript" th:src="@{js/jquery.ui.custom.js}"></script>
+    <script type="text/javascript" th:src="@{js/bootstrap.min.js}"></script>
+    <script type="text/javascript" th:src="@{js/matrix.js}"></script>
+    <script type="text/javascript" th:src="@{js/select2.min.js}"></script>
+    <script type="text/javascript" th:src="@{js/echarts.min.js}"></script>
+</head>
+
+<body>
+<!--Header-part-->
+<div id="header">
+    <h1><a href="dashboard.html">首页</a></h1>
+</div>
+<!--close-Header-part-->
+
+<!--top-Header-menu-->
+<div id="user-nav" class="navbar navbar-inverse">
+    <ul class="nav">
+        <li class="dropdown" id="profile-messages">
+            <a title="" href="#">
+                <i class="icon icon-user"></i>
+                <span class="text" th:text="'欢迎，' + ${student.getStudentName()}">欢迎，xxx</span>
+            </a>
+        </li>
+        <li class="">
+            <a title="" href="login">
+                <i class="icon icon-share-alt"></i>
+                <span class="text">退出</span>
+            </a>
+        </li>
+    </ul>
+</div>
+<!--close-top-Header-menu-->
+
+<!--start-top-serch-->
+<div id="search">
+    <input type="text" placeholder="输入搜索内容..." />
+    <button type="submit" class="tip-bottom" title="Search"><i class="icon-search icon-white"></i></button>
+</div>
+<!--close-top-serch-->
+
+<!--sidebar-menu-->
+<div id="sidebar"><a href="#" class="visible-phone"><i class="icon icon-home"></i> 控制台</a>
+    <ul>
+        <li class="active"><a href="#"><i class="icon icon-home"></i> <span>首页</span></a> </li>
+
+        <li> <a href="/itoCharts"><i class="icon icon-eye-open"></i> <span>个人画像</span></a> </li>
+
+        <li class="submenu">
+            <a href="#"><i class="icon icon-th-list"></i> <span>工具</span> </a>
+            <ul>
+                <li><a href="/itoScore">成绩预测</a></li>
+                <li><a href="/itoChoice">七选三参考</a></li>
+                <li><a href="/itoProfile">学生群像</a></li>
+                <li><a href="/itoPianke">偏科生辅导</a></li>
+                <li><a href="/itoSubsidies">贫困生补助</a></li>
+                <li><a href="/itoXuefeng">学风分析报告</a></li>
+            </ul>
+        </li>
+    </ul>
+</div>
+<!--sidebar-menu-->
+
+<!--main-container-part-->
+<div id="content">
+    <!--breadcrumbs-->
+    <div id="content-header">
+        <div id="breadcrumb">
+            <a href="#" title="Go to Home" class="tip-bottom"><i class="icon-home"></i> 首页</a>
+        </div>
+        <h1>个人信息</h1>
+    </div>
+    <div class="container-fluid">
+        <hr>
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="widget-box">
+                    <div class="widget-title"> <span class="icon"> <i class="icon-briefcase"></i> </span>
+                        <h5>信息</h5>
+                    </div>
+                    <div class="widget-content">
+                        <div class="row-fluid">
+                            <div class="span6">
+                                <table class="" style="margin: auto">
+                                    <tbody>
+                                    <tr>
+                                        <td>
+                                            <h3 th:text="${student.getStudentName()}">Name</h3>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td th:text="${student.getGender()} + '  ' + ${student.getNation()}"></td>
+                                    </tr>
+                                    <tr>
+                                        <td th:text="${student.getBirthYear()} + '年出生'" th:unless="${student.getBirthYear()} eq null"></td>
+                                    </tr>
+                                    <tr>
+                                        <td th:text="${student.getNativePlace()}" th:unless="${student.getNativePlace()} eq null">Your Town</td>
+                                    </tr>
+                                    <tr>
+                                        <td th:text="${student.getResidenceType()} + '户口'" th:unless="${student.getResidenceType()} eq null">Your Town</td>
+                                    </tr>
+                                    <tr>
+                                        <td th:text="${student.getPolicy()}" th:unless="${student.getPolicy()} eq null">Your Region/State</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="span6">
+                                <table class="table table-bordered table-invoice">
+                                    <tbody>
+                                    <tr>
+                                    <tr>
+                                        <td class="width30">Student ID:</td>
+                                        <td class="width70"><strong th:text="${student.getStudentId()}"></strong></td>
+                                    </tr>
+                                    <tr>
+                                        <td>班级:</td>
+                                        <td>
+                                            <strong th:text="无信息" th:if="${student.getClassId()} eq null" }></strong>
+                                            <strong th:text="${student.getClassId()} + '班（'+${student.getClassId()}+'）'" th:unless="${student.getClassId()} eq null" }></strong>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>寝室:</td>
+                                        <td>
+                                            <strong th:text="无信息" th:if="${student.getQinshihao()} eq null" }></strong>
+                                            <strong th:text="${student.getQinshihao()}" th:unless="${student.getQinshihao()} eq null" }></strong>
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>是否住校:</td>
+                                        <td>
+                                            <strong th:if="${student.getIsZhusu()} eq null" }>不住校</strong>
+                                            <strong th:unless="${student.getIsZhusu()} eq null" }>住校</strong>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>目前是否在校:</td>
+                                        <td>
+                                            <strong th:if="${student.getIsLeaveSchool()} eq null" }>在校</strong>
+                                            <strong th:unless="${student.getIsLeaveSchool()} eq null" }>不在校</strong>
+                                        </td>
+                                    </tr>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+
+</html>

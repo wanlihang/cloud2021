@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>学生画像系统</title>
+  <!-- 引入css -->
+  <link rel="stylesheet" th:href="@{css/bootstrap.min.css}" />
+  <link rel="stylesheet" th:href="@{css/bootstrap-responsive.min.css}" />
+  <link rel="stylesheet" th:href="@{css/matrix-style.css}" />
+  <link rel="stylesheet" th:href="@{css/matrix-media.css}" />
+  <!-- 引入js -->
+  <script type="text/javascript" th:src="@{js/jquery.min.js}"></script>
+  <script type="text/javascript" th:src="@{js/jquery.ui.custom.js}"></script>
+  <script type="text/javascript" th:src="@{js/bootstrap.min.js}"></script>
+  <script type="text/javascript" th:src="@{js/matrix.js}"></script>
+  <script type="text/javascript" th:src="@{js/select2.min.js}"></script>
+  <script type="text/javascript" th:src="@{js/echarts.min.js}"></script>
+</head>
+
+<body>
+<!--Header-part-->
+<div id="header">
+  <h1><a href="dashboard.html">首页</a></h1>
+</div>
+<!--close-Header-part-->
+<!--top-Header-menu-->
+<div id="user-nav" class="navbar navbar-inverse">
+  <ul class="nav">
+    <li class="dropdown" id="profile-messages">
+      <a title="" href="#">
+        <i class="icon icon-user"></i>
+        <span class="text" th:text="'欢迎，' + ${student.getStudentName()}">欢迎，xxx</span>
+      </a>
+    </li>
+    <li class="">
+      <a title="" href="login">
+        <i class="icon icon-share-alt"></i>
+        <span class="text">退出</span>
+      </a>
+    </li>
+  </ul>
+</div>
+<!--close-top-Header-menu-->
+<!--start-top-serch-->
+<div id="search">
+  <input type="text" placeholder="输入搜索内容..." />
+  <button type="submit" class="tip-bottom" title="Search"><i class="icon-search icon-white"></i></button>
+</div>
+<!--close-top-serch-->
+<!--sidebar-menu-->
+<div id="sidebar"><a href="#" class="visible-phone"><i class="icon icon-home"></i> 控制台</a>
+  <ul>
+    <li><a href="/ctoIndex"><i class="icon icon-home"></i> <span>首页</span></a> </li>
+    <li class="active"> <a href="#"><i class="icon icon-eye-open"></i> <span>个人画像</span></a> </li>
+    <li class="submenu">
+      <a href="#"><i class="icon icon-th-list"></i> <span>工具</span> </a>
+      <ul>
+        <li><a href="/ctoScore">成绩预测</a></li>
+        <li><a href="/ctoChoice">七选三参考</a></li>
+        <li><a href="/ctoProfile">学生群像</a></li>
+        <li><a href="/ctoPianke">偏科生辅导</a></li>
+        <li><a href="/ctoSubsidies">贫困生补助</a></li>
+        <li><a href="/ctoXuefeng">学风分析报告</a></li>
+      </ul>
+    </li>
+  </ul>
+</div>
+<!--sidebar-menu-->
+<!--main-container-part-->
+<div id="content">
+  <!--breadcrumbs-->
+  <div id="content-header">
+    <div id="breadcrumb">
+      <a href="#" title="Go to Home" class="tip-bottom"><i class="icon-home"></i>首页</a>
+      <a href="#" class="current">个人画像</a>
+    </div>
+    <h1>个人画像</h1>
+  </div>
+  <div class="container-fluid">
+    <hr>
+    <!-- 成绩 -->
+    <div class="row-fluid">
+      <div class="span8">
+        <div class="widget-box">
+          <div class="widget-title"> <span class="icon"> <i class="icon-signal"></i> </span>
+            <h5>成绩情况</h5>
+          </div>
+          <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+          <div id="chengji" style="width: auto;height:400px;"></div>
+        </div>
+      </div>
+      <div class="span4">
+        <div class="widget-box">
+          <div class="widget-title"> <span class="icon"> <i class="icon-book"></i> </span>
+            <h5>成绩特点</h5>
+          </div>
+          <div class="widget-content nopadding">
+            <table class="table table-bordered table-striped">
+              <thead>
+              <tr>
+                <th>科目</th>
+                <th>评价</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr class="odd gradeX">
+                <th>语文</th>
+                <th th:text="${biaoqian1}">特点特点特点特点特点</th>
+              </tr>
+              </tbody>
+              <tbody>
+              <tr class="odd gradeX">
+                <th>数学</th>
+                <th th:text="${biaoqian2}">特点特点特点特点特点</th>
+              </tr>
+              </tbody>
+              <tbody>
+              <tr class="odd gradeX">
+                <th>英语</th>
+                <th th:text="${biaoqian3}">特点特点特点特点特点</th>
+              </tr>
+              </tbody>
+              <tbody>
+              <tr class="odd gradeX">
+                <th>物理</th>
+                <th th:text="${biaoqian4}">特点特点特点特点特点</th>
+              </tr>
+              </tbody>
+              <tbody>
+              <tr class="odd gradeX">
+                <th>化学</th>
+                <th th:text="${biaoqian5}">特点特点特点特点特点</th>
+              </tr>
+              </tbody>
+              <tbody>
+              <tr class="odd gradeX">
+                <th>生物</th>
+                <th th:text="${biaoqian6}">特点特点特点特点特点</th>
+              </tr>
+              </tbody>
+              <tbody>
+              <tr class="odd gradeX">
+                <th>历史</th>
+                <th th:text="${biaoqian7}">特点特点特点特点特点</th>
+              </tr>
+              </tbody>
+              <tbody>
+              <tr class="odd gradeX">
+                <th>地理</th>
+                <th th:text="${biaoqian8}">特点特点特点特点特点</th>
+              </tr>
+              </tbody>
+              <tbody>
+              <tr class="odd gradeX">
+                <th>政治</th>
+                <th th:text="${biaoqian17}">特点特点特点特点特点</th>
+              </tr>
+              </tbody>
+              <tbody>
+              <tr class="odd gradeX">
+                <th>技术</th>
+                <th th:text="${biaoqian59}">特点特点特点特点特点</th>
+              </tr>
+              </tbody>
+            </table>
+            <table class="table table-bordered table-striped">
+              <thead>
+              <tr>
+                <th>总评</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr class="odd gradeX">
+                <th th:text="${zongping}">特点特点特点特点特点</th>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- 成绩End -->
+    <!-- 考勤 -->
+    <div class="row-fluid">
+      <div class="span5">
+        <div class="widget-box">
+          <div class="widget-title"> <span class="icon"> <i class="icon-bookmark"></i> </span>
+            <h5>考勤情况</h5>
+          </div>
+          <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+          <div id="kaoqin" style="width: auto;height:400px;"></div>
+          <div class="widget-title"> <span class="icon"> <i class="icon-book"></i> </span>
+            <h5>考勤特点</h5>
+          </div>
+          <div class="widget-content nopadding">
+            <h5 th:text="${kaoqinFlag}" style="margin-left: 20px;"></h5>
+            <h5 th:text="${kaoqinXiaofu}" style="margin-left: 20px;"></h5>
+          </div>
+        </div>
+      </div>
+      <div class="span7">
+        <div class="widget-box">
+          <div class="widget-title"> <span class="icon"> <i class="icon-shopping-cart"></i> </span>
+            <h5>消费情况</h5>
+          </div>
+          <div style="text-align: right; margin: 10px 10px auto auto; height: 26px;">
+            <button style="display: none" id="back-button" class="btn btn-info btn-small" onclick="initXiaofeiChart()">返回</button>
+          </div>
+          <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+          <div id="xiaofei" style="width: auto;height:420px;"></div>
+          <div id="avgMonth" style="width: auto;height:20px;text-align: center;display: none">
+            <h5 >月平均消费额/次：<span id="avgXiaofei"></span> 元/次</h5>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- 考勤End -->
+    <!-- 消费 -->
+    <div class="row-fluid">
+
+
+    </div>
+    <!-- 消费End -->
+  </div>
+  <script type="text/javascript" th:inline="javascript">
+      //获取10门课程成绩
+      var score = [[${score}]];
+      var avgscore = [[${avgScore}]];
+      //获取考勤数据
+      var kaoqinCount = [[${kaoqinCount}]];
+      //获取5个月的消费金额
+      var comsp = [[${comsp}]];
+      var comspCount = [[${comspCount}]];
+      var comspTotal = comsp[9] + comsp[10] + comsp[11] + comsp[12] + comsp[1];
+      //日消费额
+      var comspDay = [[${comspDay}]];
+      var comspDayCount = [[${comspDayCount}]];
+
+      // 基于准备好的dom，初始化echarts实例
+      var chengjiChart = echarts.init(document.getElementById('chengji'));
+      var kaoqinChart = echarts.init(document.getElementById('kaoqin'));
+      var xiaofeiChart = echarts.init(document.getElementById('xiaofei'));
+      // 指定图表的配置项和数据
+      chengjiChart.setOption(
+          {
+              legend: {
+                  data: ['分数', '班级平均分数']
+              },
+              yAxis: {
+                  type: 'value'
+              },
+              xAxis: {
+                  type: 'category',
+                  data: ["语文", "数学", "英语", "物理", "化学", "生物", "历史", "地理", "政治", "技术"]
+              },
+              series: [{
+                  label: {
+                      show: true,
+                      position: 'inside'
+                  },
+                  name: '分数',
+                  type: 'bar',
+                  data: [score[1], score[2], score[3], score[4], score[5], score[6], score[7], score[8], score[17], score[59]]
+              },
+                  {
+                      label: {
+                          show: true,
+                          position: 'inside'
+                      },
+                      name: '班级平均分数',
+                      type: 'bar',
+                      data: [avgscore[1], avgscore[2], avgscore[3], avgscore[4], avgscore[5], avgscore[6], avgscore[7], avgscore[8], avgscore[17], avgscore[59]]
+                  }
+              ]
+          }
+      );
+      kaoqinChart.setOption(
+          {
+              series: [{
+                  name: '访问来源',
+                  type: 'pie',
+                  radius: '40%',
+                  label: { //饼图图形上的文本标签
+                      normal: {
+                          show: true,
+                          formatter: '{b}: {c}({d}%)'
+                      }
+                  },
+                  data: [
+                      { value: kaoqinCount[0], name: '正常进校' },
+                      { value: kaoqinCount[1], name: '正常离校' },
+                      { value: kaoqinCount[2], name: '迟到' },
+                      { value: kaoqinCount[3], name: '早退' },
+                      { value: kaoqinCount[4], name: '未穿校服' }
+                  ]
+              }]
+          }
+      );
+      var option = {
+          title: {
+              text: "2018-2019第一学期/月消费情况"
+          },
+          tooltip: {
+              trigger: 'axis',
+              axisPointer: { // 坐标轴指示器，坐标轴触发有效
+                  type: 'shadow' // 默认为直线，可选为：'line' | 'shadow'
+              },
+              formatter: function(params) {
+                  var tar = params[1];
+                  return tar.name + '<br/>' + tar.seriesName + ' : ' + tar.value;
+              }
+          },
+          xAxis: {
+              type: 'category',
+              splitLine: { show: false },
+              data: ['总消费', '2018年9月', '2018年10月', '2018年11月', '2018年12月', '2019年1月'],
+              axisLabel: {
+                  interval:0, //坐标刻度之间的显示间隔，默认就可以了（默认是不重叠）
+                  rotate:-30   //调整数值改变倾斜的幅度（范围-90到90）
+              }
+          },
+          yAxis: {
+              type: 'value'
+          },
+          series: [{
+              name: '辅助',
+              type: 'bar',
+              stack: '总量',
+              itemStyle: {
+                  barBorderColor: 'rgba(0,0,0,0)',
+                  color: 'rgba(0,0,0,0)'
+              },
+              emphasis: {
+                  itemStyle: {
+                      barBorderColor: 'rgba(0,0,0,0)',
+                      color: 'rgba(0,0,0,0)'
+                  }
+              },
+              data: [0, comspTotal - comsp[9], comspTotal - comsp[9] - comsp[10], comsp[1] + comsp[12], comsp[1], 0]
+          },
+              {
+                  name: '生活费',
+                  type: 'bar',
+                  stack: '总量',
+                  label: {
+                      show: true,
+                      position: 'inside'
+                  },
+                  data: [comspTotal, comsp[9], comsp[10], comsp[11], comsp[12], comsp[1]]
+              }
+          ]
+      };
+      function initXiaofeiChart() {
+          echarts.dispose(document.getElementById('xiaofei'));
+          var xiaofeiChart = echarts.init(document.getElementById('xiaofei'));
+          xiaofeiChart.setOption(option);
+          document.getElementById("back-button").style.display="none";
+          document.getElementById("avgMonth").style.display="none";
+          xiaofeiChart.on('click', function (params) {
+              if(params.name != "总消费"){
+                  changeXiaofeiChart(params.name);
+              }
+          });
+      }
+      initXiaofeiChart();
+      function changeXiaofeiChart(flag){
+          echarts.dispose(document.getElementById('xiaofei'));
+          var xiaofeiChart = echarts.init(document.getElementById('xiaofei'));
+          var xdata;
+          var sdata;
+          var sdataCount;
+          var sign = 0;
+          switch (flag) {
+              case "2018年9月":
+                  sign = 9;break;
+              case "2018年10月":
+                  sign = 10;break;
+              case "2018年11月":
+                  sign = 11;break;
+              case "2018年12月":
+                  sign = 12;break;
+              case "2019年1月":
+                  sign = 1;break;
+          }
+          document.getElementById('avgXiaofei').innerText = Math.round(comsp[sign]/comspCount[sign]);
+          if(sign == 9 || sign == 11){
+              xdata = ['1号', '2号', '3号', '4号', '5号', '6号', '7号', '8号', '9号', '10号',
+                  '11号', '12号', '13号', '14号', '15号', '16号', '17号', '18号', '19号', '20号',
+                  '21号', '22号', '23号', '24号', '25号', '26号', '27号', '28号', '29号', '30号'];
+              sdata = comspDay[sign].slice(1, 30);
+              sdataCount = comspDayCount[sign].slice(1, 30);
+          }
+          else {
+              xdata = ['1号', '2号', '3号', '4号', '5号', '6号', '7号', '8号', '9号', '10号',
+                  '11号', '12号', '13号', '14号', '15号', '16号', '17号', '18号', '19号', '20号',
+                  '21号', '22号', '23号', '24号', '25号', '26号', '27号', '28号', '29号', '30号', '31号'];
+              sdata = comspDay[sign].slice(1, 31);
+              sdataCount = comspDayCount[sign].slice(1, 31);
+          }
+          xiaofeiChart.setOption(
+              {
+                  title:{
+                      text: flag + "/日消费情况"
+                  },
+                  tooltip: {
+                      trigger: 'axis',
+                      axisPointer: {
+                          type: 'cross',
+                          crossStyle: {
+                              color: '#999'
+                          }
+                      }
+                  },
+                  legend: {
+                      data: ['日消费金额', '日消费次数']
+                  },
+                  xAxis: {
+                      type: 'category',
+                      data: xdata,
+                      axisPointer: {
+                          type: 'shadow'
+                      },
+                      axisLabel: {
+                          interval:0, //坐标刻度之间的显示间隔，默认就可以了（默认是不重叠）
+                          rotate:-40   //调整数值改变倾斜的幅度（范围-90到90）
+                      }
+                  },
+                  yAxis: [
+                      {
+                          type: 'value',
+                          name: '金额',
+                          axisLabel: {
+                              formatter: '{value} 元'
+                          }
+                      },
+                      {
+                          type: 'value',
+                          name: '消费次数',
+                          interval: 4,
+                          axisLabel: {
+                              formatter: '{value} 次'
+                          }
+                      }
+                  ],
+                  series: [
+                      {
+                          name: '日消费金额',
+                          data: sdata,
+                          type: 'bar',
+                          label: {
+                              show: true,
+                              position: 'inside'
+                          }
+                      }, {
+                          name: '日消费次数',
+                          yAxisIndex: 1,
+                          data: sdataCount,
+                          type: 'line'
+                      }
+                  ]
+              }
+          );
+          document.getElementById("back-button").style.display="";
+          document.getElementById("avgMonth").style.display="";
+      }
+      window.onresize = function() {
+          chengjiChart.resize();
+          kaoqinChart.resize();
+          xiaofeiChart.resize();
+      };
+
+
+  </script>
+</div>
+</body>
+
+</html>

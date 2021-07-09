@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>学生画像系统</title>
+    <!-- 引入css -->
+    <link rel="stylesheet" th:href="@{css/bootstrap.min.css}" />
+    <link rel="stylesheet" th:href="@{css/bootstrap-responsive.min.css}" />
+    <link rel="stylesheet" th:href="@{css/matrix-style.css}" />
+    <link rel="stylesheet" th:href="@{css/matrix-media.css}" />
+    <!-- 引入js -->
+    <script type="text/javascript" th:src="@{js/jquery.min.js}"></script>
+    <script type="text/javascript" th:src="@{js/jquery.ui.custom.js}"></script>
+    <script type="text/javascript" th:src="@{js/bootstrap.min.js}"></script>
+    <script type="text/javascript" th:src="@{js/matrix.js}"></script>
+    <script type="text/javascript" th:src="@{js/select2.min.js}"></script>
+    <script type="text/javascript" th:src="@{js/echarts.min.js}"></script>
+</head>
+
+<body>
+<!--Header-part-->
+<div id="header">
+    <h1><a href="dashboard.html">首页</a></h1>
+</div>
+<!--close-Header-part-->
+
+<!--top-Header-menu-->
+<div id="user-nav" class="navbar navbar-inverse">
+    <ul class="nav">
+        <li class="dropdown" id="profile-messages">
+            <a title="" href="#">
+                <i class="icon icon-user"></i>
+                <span class="text" th:text="'欢迎，' + ${student.getStudentName()()}">欢迎，xxx</span>
+            </a>
+        </li>
+        <li class="">
+            <a title="" href="login">
+                <i class="icon icon-share-alt"></i>
+                <span class="text">退出</span>
+            </a>
+        </li>
+    </ul>
+</div>
+<!--close-top-Header-menu-->
+
+<!--start-top-serch-->
+<div id="search">
+    <input type="text" placeholder="输入搜索内容..." />
+    <button type="submit" class="tip-bottom" title="Search"><i class="icon-search icon-white"></i></button>
+</div>
+<!--close-top-serch-->
+
+<!--sidebar-menu-->
+<div id="sidebar"><a href="#" class="visible-phone"><i class="icon icon-home"></i> 控制台</a>
+    <ul>
+        <li><a href="/chtoIndex"><i class="icon icon-home"></i> <span>首页</span></a> </li>
+
+        <li> <a href="/chtoCharts"><i class="icon icon-eye-open"></i> <span>个人画像</span></a> </li>
+
+        <li class="submenu">
+            <a href="#"><i class="icon icon-th-list"></i> <span>工具</span> </a>
+            <ul>
+                <li><a href="/chtoScore">成绩预测</a></li>
+                <li class="active"><a href="#">七选三参考</a></li>
+                <li><a href="/chtoProfile">学生群像</a></li>
+                <li><a href="/chtoPianke">偏科生辅导</a></li>
+                <li><a href="/chtoSubsidies">贫困生补助</a></li>
+                <li><a href="/chtoXuefeng">学风分析报告</a></li>
+            </ul>
+        </li>
+    </ul>
+</div>
+<!--sidebar-menu-->
+
+<!--main-container-part-->
+<div id="content">
+    <!--breadcrumbs-->
+    <div id="content-header">
+        <div id="breadcrumb">
+            <a href="#" title="Go to Home" class="tip-bottom"><i class="icon-home"></i>首页</a>
+            <a href="#" class="current">工具-七选三参考</a>
+        </div>
+        <h1>七选三参考</h1>
+    </div>
+    <div class="container-fluid">
+        <hr>
+        <div class="row-fluid">
+            <div class="span8">
+                <div class="widget-box">
+                    <div class="widget-title"> <span class="icon"> <i class="icon-book"></i> </span>
+                        <h5>根据成绩预测情况，七个科目中选择总分最高的三个形成组合</h5>
+                    </div>
+                    <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+                    <div id="choice" style="width: auto;height:500px;"></div>
+                </div>
+            </div>
+            <div class="span4">
+                <div class="widget-box">
+                    <div class="widget-title"> <span class="icon"> <i class="icon-book"></i> </span>
+                        <h5>根据成绩预测情况，七个科目中选择总分最高的三个形成组合</h5>
+                    </div>
+                    <div id="ans" style="width: auto;height:100px;text-align: center">
+                        <h3>七选三建议<br><span id="sug"></span></h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript" th:inline="javascript">
+    var sug = [[${sug}]];
+    document.getElementById("sug").innerText = sug[0] + " + " + sug[1] + " + " + sug[2];
+    var preScore = [[${preScore}]];
+    var choiceChart = echarts.init(document.getElementById('choice'));
+    choiceChart.setOption(
+        {
+            title: {
+                text: '各科预测成绩（T-score）雷达图',
+                left: 'center',
+                top: 'top'
+            },
+            tooltip:{},
+            radar: {
+                // shape: 'circle',
+                name: {
+                    textStyle: {
+                        color: '#fff',
+                        backgroundColor: '#339599',
+                        borderRadius: 3,
+                        padding: [3, 5]
+                    }
+                },
+                indicator: [
+                    { name: '物理', max: 100},
+                    { name: '化学', max: 100},
+                    { name: '生物', max: 100},
+                    { name: '地理', max: 100},
+                    { name: '历史', max: 100},
+                    { name: '政治', max: 100},
+                    { name: '技术', max: 100}
+                ]
+            },
+            series: [{
+                tooltip: {
+                    trigger: 'item'
+                },
+                areaStyle: {},
+                name: '七选三选择参考',
+                type: 'radar',
+                // areaStyle: {normal: {}},
+                data: [
+                    {
+                        value: preScore,
+                        name: '成绩',
+                        label: {
+                            show: true
+                        }
+                    }
+                ]
+            }]
+        }
+    )
+    window.onresize = function() {
+        choiceChart.resize();
+    };
+
+</script>
+</body>
+
+</html>

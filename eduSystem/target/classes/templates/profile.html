@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>学生画像系统</title>
+    <!-- 引入css -->
+    <link rel="stylesheet" th:href="@{css/bootstrap.min.css}" />
+    <link rel="stylesheet" th:href="@{css/bootstrap-responsive.min.css}" />
+    <link rel="stylesheet" th:href="@{css/matrix-style.css}" />
+    <link rel="stylesheet" th:href="@{css/matrix-media.css}" />
+    <!-- 引入js -->
+    <script type="text/javascript" th:src="@{js/jquery.min.js}"></script>
+    <script type="text/javascript" th:src="@{js/jquery.ui.custom.js}"></script>
+    <script type="text/javascript" th:src="@{js/bootstrap.min.js}"></script>
+    <script type="text/javascript" th:src="@{js/matrix.js}"></script>
+    <script type="text/javascript" th:src="@{js/select2.min.js}"></script>
+    <script type="text/javascript" th:src="@{js/echarts.min.js}"></script>
+</head>
+
+<body>
+<!--Header-part-->
+<div id="header">
+    <h1><a href="dashboard.html">首页</a></h1>
+</div>
+<!--close-Header-part-->
+<!--top-Header-menu-->
+<div id="user-nav" class="navbar navbar-inverse">
+    <ul class="nav">
+        <li class="dropdown" id="profile-messages">
+            <a title="" href="#">
+                <i class="icon icon-user"></i>
+                <span class="text" th:text="'欢迎，' + ${studentInfo.getBfName()}">欢迎，xxx</span>
+            </a>
+        </li>
+        <li class="">
+            <a title="" href="login">
+                <i class="icon icon-share-alt"></i>
+                <span class="text">退出</span>
+            </a>
+        </li>
+    </ul>
+</div>
+<!--close-top-Header-menu-->
+<!--start-top-serch-->
+<div id="search">
+    <input type="text" placeholder="输入搜索内容..." />
+    <button type="submit" class="tip-bottom" title="Search"><i class="icon-search icon-white"></i></button>
+</div>
+<!--close-top-serch-->
+<!--sidebar-menu-->
+<div id="sidebar"><a href="#" class="visible-phone"><i class="icon icon-home"></i> 控制台</a>
+    <ul>
+        <li><a href="/ptoIndex"><i class="icon icon-home"></i> <span>首页</span></a> </li>
+        <li> <a href="/ptoCharts"><i class="icon icon-eye-open"></i> <span>个人画像</span></a> </li>
+        <li class="submenu">
+            <a href="#"><i class="icon icon-th-list"></i> <span>工具</span> </a>
+            <ul>
+                <li><a href="/ptoScore">成绩预测</a></li>
+                <li><a href="/ptoChoice">七选三参考</a></li>
+                <li class="active"><a href="#">学生群像</a></li>
+                <li><a href="/ptoPianke">偏科生辅导</a></li>
+                <li><a href="/ptoSubsidies">贫困生补助</a></li>
+                <li><a href="/ptoXuefeng">学风分析报告</a></li>
+            </ul>
+        </li>
+    </ul>
+</div>
+<!--sidebar-menu-->
+<!--main-container-part-->
+<div id="content">
+    <!--breadcrumbs-->
+    <div id="content-header">
+        <div id="breadcrumb">
+            <a href="#" title="Go to Home" class="tip-bottom"><i class="icon-home"></i>首页</a>
+            <a href="#" class="current">工具-学生群像</a>
+        </div>
+        <h1>学生群像</h1>
+    </div>
+    <div class="container-fluid">
+        <hr>
+
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="widget-box">
+                    <div class="widget-title"> <span class="icon"> <i class="icon-bookmark"></i> </span>
+                        <h5>成绩概况</h5>
+                    </div>
+                    <div style="width: auto;height:500px;text-align: center">
+                        <div style="text-align: center">
+                            <button id="gaoyi" class="btn btn-large" onclick="showScore(1)">高一</button>
+                            <button class="btn btn-large" onclick="showScore(2)">高二</button>
+                            <button class="btn btn-large" onclick="showScore(3)">高三</button>
+                        </div>
+                        <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+                        <div id="chengjiTotal" style="width: auto;height:400px;"></div>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="widget-box">
+                    <div class="widget-title"> <span class="icon"> <i class="icon-bookmark"></i> </span>
+                        <h5>考勤概况</h5>
+                    </div>
+                    <div style="text-align: right; margin: 10px 10px auto auto; height: 26px;">
+                        <button style="display: none" id="back-button" class="btn btn-info btn-small" onclick="initAttdChart()">返回</button>
+                    </div>
+                    <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+                    <div id="kaoqinTotal" style="width: auto;height:400px;"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="widget-box">
+                    <div class="widget-title"> <span class="icon"> <i class="icon-bookmark"></i> </span>
+                        <h5>平均消费情况</h5>
+                    </div>
+                    <div style="text-align: right; margin: 10px 10px auto auto; height: 26px;">
+                        <button style="display: none" id="back-button2" class="btn btn-info btn-small" onclick="initXiaofeiTotalChart()">返回</button>
+                    </div>
+                    <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+                    <div id="xiaofeiTotal" style="width: auto;height:420px;"></div>
+                    <div id="avgMonth" style="width: auto;height:20px;text-align: center;display: none">
+                        <h5 >月平均消费额/次：<span id="avgXiaofei"></span> 元/次</h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="widget-box">
+                    <div class="widget-title"> <span class="icon"> <i class="icon-bookmark"></i> </span>
+                        <h5>消费比例：按性别</h5>
+                    </div>
+                    <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+                    <div id="xiaofeiSex" style="width: auto;height:400px;"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row-fluid">
+            <div class="span5">
+                <div class="widget-box">
+                    <div class="widget-title"> <span class="icon"> <i class="icon-bookmark"></i> </span>
+                        <h5>学生性别总比例</h5>
+                    </div>
+                    <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+                    <div id="sexTotal" style="width: auto;height:400px;"></div>
+                </div>
+            </div>
+            <div class="span7">
+                <div class="widget-box">
+                    <div class="widget-title"> <span class="icon"> <i class="icon-bookmark"></i> </span>
+                        <h5>性别比例：按年级</h5>
+                    </div>
+                    <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+                    <div id="sex" style="width: auto;height:400px;"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="widget-box">
+                    <div class="widget-title"> <span class="icon"> <i class="icon-bookmark"></i> </span>
+                        <h5>年龄比例</h5>
+                    </div>
+                    <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+                    <div id="age" style="width: auto;height:400px;"></div>
+                </div>
+            </div>
+        </div>
+
+
+
+    </div>
+</div>
+<script type="text/javascript" th:inline="javascript">
+    setTimeout(function() {
+        // IE
+        if(document.all) {
+            document.getElementById("gaoyi").click();
+        }
+        // 其它浏览器
+        else {
+            var e = document.createEvent("MouseEvents");
+            e.initEvent("click", true, true);
+            document.getElementById("gaoyi").dispatchEvent(e);
+        }
+    }, 0);
+    var manNumTotal = [[${manNumTotal}]];
+    var womenNumTotal = [[${womenNumTotal}]];
+    var manNum = [[${manNum}]];
+    var womenNum = [[${womenNum}]];
+    var sexTotalChart = echarts.init(document.getElementById('sexTotal'));
+    var sexChart = echarts.init(document.getElementById('sex'));
+    sexTotalChart.setOption(
+        {
+            series: [{
+                type: 'pie',
+                radius: '60%',
+                label: { //饼图图形上的文本标签
+                    normal: {
+                        show: true,
+                        formatter: '{b}: {c}({d}%)'
+                    }
+                },
+                data: [
+                    { value: manNumTotal, name: '男' },
+                    { value: womenNumTotal, name: '女' }
+                ]
+            }]
+        }
+    )
+
+    var option2 = {
+        legend: {},
+        tooltip: {
+            trigger: 'axis',
+            showContent: false
+        },
+        dataset: {
+            source: [
+                ['sexCount', '高一', '高二', '高三'],
+                ['男', manNum[0], manNum[1], manNum[2]],
+                ['女', womenNum[0], womenNum[1], womenNum[2]]
+            ]
+        },
+        xAxis: {type: 'category'},
+        yAxis: {gridIndex: 0},
+        grid: {top: '55%'},
+        series: [
+            {type: 'line', smooth: true, seriesLayoutBy: 'row'},
+            {type: 'line', smooth: true, seriesLayoutBy: 'row'},
+            {
+                type: 'pie',
+                id: 'pie',
+                radius: '30%',
+                center: ['50%', '25%'],
+                label: {
+                    formatter: '{b}: {@seniorOne} ({d}%)'
+                },
+                encode: {
+                    itemName: 'sexCount',
+                    value: '高一',
+                    tooltip: '高一'
+                }
+            }
+        ]
+    };
+    sexChart.on('updateAxisPointer', function (event) {
+        var xAxisInfo = event.axesInfo[0];
+        if (xAxisInfo) {
+            var dimension = xAxisInfo.value + 1;
+            sexChart.setOption({
+                series: {
+                    id: 'pie',
+                    label: {
+                        formatter: '{b}: {@[' + dimension + ']} ({d}%)'
+                    },
+                    encode: {
+                        value: dimension,
+                        tooltip: dimension
+                    }
+                }
+            });
+        }
+    });
+    sexChart.setOption(option2);
+
+    var ageNum1= [[${ageNum1}]];
+    var ageNum2= [[${ageNum2}]];
+    var ageNum3= [[${ageNum3}]];
+    var ageChart = echarts.init(document.getElementById('age'));
+    ageChart.setOption(
+        {
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: {            // 坐标轴指示器，坐标轴触发有效
+                    type: 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+                }
+            },
+            legend: {
+                data: ['14岁及以下', '15岁', '16岁', '17岁','18岁', '19岁及以上']
+            },
+            grid: {
+                left: '3%',
+                right: '4%',
+                bottom: '3%',
+                containLabel: true
+            },
+            xAxis: {
+                type: 'value'
+            },
+            yAxis: {
+                type: 'category',
+                data: ['高一', '高二', '高三']
+            },
+            series: [
+                {
+                    name: '14岁及以下',
+                    type: 'bar',
+                    stack: '总量',
+                    label: {
+                        show: true,
+                        position: 'inside'
+                    },
+                    data: [ageNum1[14], ageNum2[14], ageNum3[14]]
+                },
+                {
+                    name: '15岁',
+                    type: 'bar',
+                    stack: '总量',
+                    label: {
+                        show: true,
+                        position: 'inside'
+                    },
+                    data: [ageNum1[15], ageNum2[15], ageNum3[15]]
+                },
+                {
+                    name: '16岁',
+                    type: 'bar',
+                    stack: '总量',
+                    label: {
+                        show: true,
+                        position: 'inside'
+                    },
+                    data: [ageNum1[16], ageNum2[16], ageNum3[16]]
+                },
+                {
+                    name: '17岁',
+                    type: 'bar',
+                    stack: '总量',
+                    label: {
+                        show: true,
+                        position: 'inside'
+                    },
+                    data: [ageNum1[17], ageNum2[17], ageNum3[17]]
+                },
+                {
+                    name: '18岁',
+                    type: 'bar',
+                    stack: '总量',
+                    label: {
+                        show: true,
+                        position: 'inside'
+                    },
+                    data: [ageNum1[18], ageNum2[18], ageNum3[18]]
+                },
+                {
+                    name: '19岁及以上',
+                    type: 'bar',
+                    stack: '总量',
+                    label: {
+                        show: true,
+                        position: 'inside'
+                    },
+                    data: [ageNum1[19], ageNum2[19], ageNum3[19]]
+                }
+            ]
+        }
+    );
+
+
+    var avgScore1= [[${avgScore1}]];
+    var avgScore2= [[${avgScore2}]];
+    var avgScore3= [[${avgScore3}]];
+    var chengjiChart = echarts.init(document.getElementById('chengjiTotal'));
+    function showScore(index){
+        echarts.dispose(document.getElementById('chengjiTotal'));
+        var chengjiChart = echarts.init(document.getElementById('chengjiTotal'));
+        var tips;
+        var avgs;
+        switch (index) {
+            case 1:
+                tips = "2018-2019第一学期期中考试平均分数情况/高一";
+                avgs = avgScore1;break;
+            case 2:
+                tips = "2018-2019第一学期期中考试平均分数情况/高二";
+                avgs = avgScore2;break;
+            case 3:
+                tips = "2018-2019第一学期期中考试（语文、数学）及五校联考（其余学科）平均分数情况/高三";
+                avgs = avgScore3;break;
+        }
+        chengjiChart.setOption(
+            {
+                title:{
+                    text: tips
+                },
+                yAxis: {
+                    type: 'value'
+                },
+                xAxis: {
+                    type: 'category',
+                    data: ["语文", "数学", "英语", "物理", "化学", "生物", "历史", "地理", "政治", "技术"]
+                },
+                series: {
+                    label: {
+                        show: true,
+                        position: 'inside'
+                    },
+                    type: 'bar',
+                    data: avgs
+                }
+            }
+        );
+        chengjiChart.on('click', function (params) {
+            changeChengjiChart(params.name, index, tips, avgs);
+        });
+    }
+
+    var claName1 = [[${claName1}]];
+    var claName2 = [[${claName2}]];
+    var claName3 = [[${claName3}]];
+    var avgClaScore1 = [[${avgClaScore1}]];
+    var avgClaScore2 = [[${avgClaScore2}]];
+    var avgClaScore3 = [[${avgClaScore3}]];
+    function changeChengjiChart(name, index, tips, avgs){
+        var claName;
+        var avgClaScoreTemp;
+        var avgClaScore;
+        var avgScoreBySub;
+        echarts.dispose(document.getElementById('chengjiTotal'));
+        var chengjiChart = echarts.init(document.getElementById('chengjiTotal'));
+        switch (index) {
+            case 1:
+                claName = claName1;
+                avgClaScoreTemp = avgClaScore1;break;
+            case 2:
+                claName = claName2;
+                avgClaScoreTemp = avgClaScore2;break;
+            case 3:
+                claName = claName3;
+                avgClaScoreTemp = avgClaScore3;break;
+        }
+        switch (name) {
+            case "语文":
+                avgScoreBySub = avgs[0];
+                tips += "/语文";
+                avgClaScore = avgClaScoreTemp[0];break;
+            case "数学":
+                avgScoreBySub = avgs[1];
+                tips += "/数学";
+                avgClaScore = avgClaScoreTemp[1];break;
+            case "英语":
+                avgScoreBySub = avgs[2];
+                tips += "/英语";
+                avgClaScore = avgClaScoreTemp[2];break;
+            case "物理":
+                avgScoreBySub = avgs[3];
+                tips += "/物理";
+                avgClaScore = avgClaScoreTemp[3];break;
+            case "化学":
+                avgScoreBySub = avgs[4];
+                tips += "/化学";
+                avgClaScore = avgClaScoreTemp[4];break;
+            case "生物":
+                avgScoreBySub = avgs[5];
+                tips += "/生物";
+                avgClaScore = avgClaScoreTemp[5];break;
+            case "地理":
+                avgScoreBySub = avgs[6];
+                tips += "/地理";
+                avgClaScore = avgClaScoreTemp[6];break;
+            case "历史":
+                avgScoreBySub = avgs[7];
+                tips += "/历史";
+                avgClaScore = avgClaScoreTemp[7];break;
+            case "政治":
+                avgScoreBySub = avgs[8];
+                tips += "/政治";
+                avgClaScore = avgClaScoreTemp[8];break;
+            case "技术":
+                avgScoreBySub = avgs[9];
+                tips += "/技术";
+                avgClaScore = avgClaScoreTemp[9];break;
+        }
+        chengjiChart.setOption(
+            {
+                title:{
+                    text: tips + "/按班级"
+                },
+                yAxis: {
+                    type: 'value'
+                },
+                xAxis: {
+                    type: 'category',
+                    data: claName,
+                    axisLabel: {
+                        interval:0, //坐标刻度之间的显示间隔，默认就可以了（默认是不重叠）
+                        rotate:-40   //调整数值改变倾斜的幅度（范围-90到90）
+                    }
+                },
+                series: {
+                    label: {
+                        show: true,
+                        position: 'inside'
+                    },
+                    type: 'bar',
+                    data: avgClaScore,
+                    markLine: {
+                        symbol: "none",
+                        data: [
+                            {
+                                silent: false,             //鼠标悬停事件  true没有，false有
+                                lineStyle: {               //警戒线的样式  ，虚实  颜色
+                                    type: "solid",
+                                    color: "#FA3934"
+                                },
+                                label: {
+                                    position: 'end',
+                                    formatter: "平均分："+avgScoreBySub,
+                                    fontSize: '12'
+                                },
+                                yAxis: avgScoreBySub
+                            }
+                        ]
+                    }
+                }
+            }
+        );
+    }
+
+    var kaoqinClaCount = [[${kaoqinClaCount}]];
+    var kaoqinCount = [[${kaoqinCount}]];
+    var attdChart = echarts.init(document.getElementById('kaoqinTotal'));
+    var optionAttd =
+        {
+            title: [{
+                subtext: '高一',
+                left: '20%',
+                top: '75%',
+                textAlign: 'center'
+            }, {
+                subtext: '高二',
+                left: '50%',
+                top: '75%',
+                textAlign: 'center'
+            }, {
+                subtext: '高三',
+                left: '80%',
+                top: '75%',
+                textAlign: 'center'
+            }],
+            legend: {},
+            tooltip: {},
+            dataset: {
+                source: [
+                    ['attdCount', 'seniorOne', 'seniorTwo', 'seniorThree'],
+                    ['正常进校', kaoqinCount[0][0], kaoqinCount[1][0], kaoqinCount[2][0]],
+                    ['正常离校', kaoqinCount[0][1], kaoqinCount[1][1], kaoqinCount[2][1]],
+                    ['迟到', kaoqinCount[0][2], kaoqinCount[1][2], kaoqinCount[2][2]],
+                    ['早退', kaoqinCount[0][3], kaoqinCount[1][3], kaoqinCount[2][3]],
+                    ['未穿校服', kaoqinCount[0][4], kaoqinCount[1][4], kaoqinCount[2][4]]
+                ]
+            },
+            series: [{
+                label: { //饼图图形上的文本标签
+                    formatter: '{b}({d}%)'
+                },
+                type: 'pie',
+                radius: '40%',
+                center: ['20%', '50%'],
+                encode: {
+                    itemName: 'attdCount',
+                    value: 'seniorOne'
+                }
+                // No encode specified, by default, it is 'seniorOne'.
+            }, {
+                label: { //饼图图形上的文本标签
+                    formatter: '{b}({d}%)'
+                },
+                type: 'pie',
+                radius: '40%',
+                center: ['50%', '50%'],
+                encode: {
+                    itemName: 'attdCount',
+                    value: 'seniorTwo'
+                }
+            }, {
+                label: { //饼图图形上的文本标签
+                    formatter: '{b}({d}%)'
+                },
+                type: 'pie',
+                radius: '40%',
+                center: ['80%', '50%'],
+                encode: {
+                    itemName: 'attdCount',
+                    value: 'seniorThree'
+                }
+            }
+            ]
+        };
+
+    function initAttdChart() {
+        echarts.dispose(document.getElementById('kaoqinTotal'));
+        var attdChart = echarts.init(document.getElementById('kaoqinTotal'));
+        attdChart.setOption(optionAttd);
+        document.getElementById("back-button").style.display="none";
+        attdChart.on('click', function (params) {
+            if(params.name == "迟到"){
+                changeAttdChart(params.name);
+            }
+        });
+    }
+    initAttdChart();
+    function changeAttdChart(name){
+        document.getElementById("back-button").style.display="";
+        echarts.dispose(document.getElementById('kaoqinTotal'));
+        var attdChart = echarts.init(document.getElementById('kaoqinTotal'));
+        alert(name);
+        attdChart.setOption(
+            {
+                title:{
+                    text: "迟到情况/按班级"
+                },
+                yAxis: {
+                    type: 'value'
+                },
+                xAxis: {
+                    type: 'category',
+                    data: claName1,
+                    axisLabel: {
+                        interval:0, //坐标刻度之间的显示间隔，默认就可以了（默认是不重叠）
+                        rotate:-40   //调整数值改变倾斜的幅度（范围-90到90）
+                    }
+                },
+                series: {
+                    label: {
+                        show: true,
+                        position: 'inside'
+                    },
+                    type: 'bar',
+                    data: kaoqinClaCount
+                }
+            }
+        );
+
+    }
+
+    //日平均消费额
+    var comspDay = [[${comspDay}]];
+    var comspDayCount = [[${comspDayCount}]];
+
+    //平均消费总额、按月份
+    var avgComspTotal = [[${avgComspTotal}]];
+    var comspTotal = avgComspTotal[9] + avgComspTotal[10] + avgComspTotal[11] + avgComspTotal[12] + avgComspTotal[1];
+
+    //平均消费男生额、按月份
+    var avgManComsp = [[${avgManComsp}]];
+    var comspManTotal = avgManComsp[9] + avgManComsp[10] + avgManComsp[11] + avgManComsp[12] + avgManComsp[1];
+
+    //平均消费女生额、按月份
+    var avgWomanComsp = [[${avgWomanComsp}]];
+    var comspWomenTotal = avgWomanComsp[9] + avgWomanComsp[10] + avgWomanComsp[11] + avgWomanComsp[12] + avgWomanComsp[1];
+
+    var comspCount = [[${comspCount}]];
+
+    var xiaofeiTotalChart = echarts.init(document.getElementById('xiaofeiTotal'));
+    var xiaofeiSexChart = echarts.init(document.getElementById('xiaofeiSex'));
+    var option =
+        {
+            title: {
+                text: "2018-2019第一学期/在校生月平均消费情况"
+            },
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: { // 坐标轴指示器，坐标轴触发有效
+                    type: 'shadow' // 默认为直线，可选为：'line' | 'shadow'
+                },
+                formatter: function(params) {
+                    var tar = params[1];
+                    return tar.name + '<br/>' + tar.seriesName + ' : ' + tar.value;
+                }
+            },
+            grid: {
+                left: '3%',
+                right: '4%',
+                bottom: '3%',
+                containLabel: true
+            },
+            xAxis: {
+                type: 'category',
+                splitLine: { show: false },
+                data: ['总消费', '2018年9月', '2018年10月', '2018年11月', '2018年12月', '2019年1月'],
+                axisLabel: {
+                    interval:0, //坐标刻度之间的显示间隔，默认就可以了（默认是不重叠）
+                    rotate:-30   //调整数值改变倾斜的幅度（范围-90到90）
+                }
+            },
+            yAxis: {
+                type: 'value'
+            },
+            series: [{
+                name: '辅助',
+                type: 'bar',
+                stack: '总量',
+                itemStyle: {
+                    barBorderColor: 'rgba(0,0,0,0)',
+                    color: 'rgba(0,0,0,0)'
+                },
+                emphasis: {
+                    itemStyle: {
+                        barBorderColor: 'rgba(0,0,0,0)',
+                        color: 'rgba(0,0,0,0)'
+                    }
+                },
+                data: [0, comspTotal - avgComspTotal[9], comspTotal - avgComspTotal[9] - avgComspTotal[10], avgComspTotal[1] + avgComspTotal[12], avgComspTotal[1], 0]
+            },
+                {
+                    name: '生活费',
+                    type: 'bar',
+                    stack: '总量',
+                    label: {
+                        show: true,
+                        position: 'inside'
+                    },
+                    data: [comspTotal, avgComspTotal[9], avgComspTotal[10], avgComspTotal[11], avgComspTotal[12], avgComspTotal[1]]
+                }
+            ]
+        };
+    function initXiaofeiTotalChart() {
+        echarts.dispose(document.getElementById('xiaofeiTotal'));
+        var xiaofeiTotalChart = echarts.init(document.getElementById('xiaofeiTotal'));
+        document.getElementById("back-button2").style.display="none";
+        document.getElementById("avgMonth").style.display="none";
+        xiaofeiTotalChart.setOption(option);
+        xiaofeiTotalChart.on('click', function (params) {
+            if(params.name != "总消费"){
+                changeXiaofeiTotalChart(params.name);
+            }
+        });
+    }
+    initXiaofeiTotalChart();
+
+    function changeXiaofeiTotalChart(flag){
+        echarts.dispose(document.getElementById('xiaofeiTotal'));
+        var xiaofeiTotalChart = echarts.init(document.getElementById('xiaofeiTotal'));
+        document.getElementById("back-button2").style.display="";
+        document.getElementById("avgMonth").style.display="";
+        var xdata;
+        var sdata;
+        var sdataCount;
+        var sign = 0;
+        switch (flag) {
+            case "2018年9月":
+                sign = 9;break;
+            case "2018年10月":
+                sign = 10;break;
+            case "2018年11月":
+                sign = 11;break;
+            case "2018年12月":
+                sign = 12;break;
+            case "2019年1月":
+                sign = 1;break;
+        }
+        document.getElementById('avgXiaofei').innerText = Math.round(avgComspTotal[sign]/comspCount[sign]);
+        if(sign == 9 || sign == 11){
+            xdata = ['1号', '2号', '3号', '4号', '5号', '6号', '7号', '8号', '9号', '10号',
+                '11号', '12号', '13号', '14号', '15号', '16号', '17号', '18号', '19号', '20号',
+                '21号', '22号', '23号', '24号', '25号', '26号', '27号', '28号', '29号', '30号'];
+            sdata = comspDay[sign].slice(1, 30);
+            sdataCount = comspDayCount[sign].slice(1, 30);
+        }
+        else {
+            xdata = ['1号', '2号', '3号', '4号', '5号', '6号', '7号', '8号', '9号', '10号',
+                '11号', '12号', '13号', '14号', '15号', '16号', '17号', '18号', '19号', '20号',
+                '21号', '22号', '23号', '24号', '25号', '26号', '27号', '28号', '29号', '30号', '31号'];
+            sdata = comspDay[sign].slice(1, 31);
+            sdataCount = comspDayCount[sign].slice(1, 31);
+        }
+        xiaofeiTotalChart.setOption(
+            {
+                title:{
+                    text: flag + "/平均日消费情况"
+                },
+                tooltip: {
+                    trigger: 'axis',
+                    axisPointer: {
+                        type: 'cross',
+                        crossStyle: {
+                            color: '#999'
+                        }
+                    }
+                },
+                legend: {
+                    data: ['日消费金额', '日消费次数']
+                },
+                xAxis: {
+                    type: 'category',
+                    data: xdata,
+                    axisPointer: {
+                        type: 'shadow'
+                    },
+                    axisLabel: {
+                        interval:0, //坐标刻度之间的显示间隔，默认就可以了（默认是不重叠）
+                        rotate:-40   //调整数值改变倾斜的幅度（范围-90到90）
+                    }
+                },
+                yAxis: [
+                    {
+                        type: 'value',
+                        name: '金额',
+                        axisLabel: {
+                            formatter: '{value} 元'
+                        }
+                    },
+                    {
+                        type: 'value',
+                        name: '消费次数',
+                        interval: 4,
+                        axisLabel: {
+                            formatter: '{value} 次'
+                        }
+                    }
+                ],
+                series: [
+                    {
+                        name: '日消费金额',
+                        data: sdata,
+                        type: 'bar',
+                        label: {
+                            show: true,
+                            position: 'inside'
+                        }
+                    }, {
+                        name: '日消费次数',
+                        yAxisIndex: 1,
+                        data: sdataCount,
+                        type: 'line'
+                    }
+                ]
+            }
+        );
+    }
+
+    xiaofeiSexChart.setOption(
+        {
+            title: {
+                text: '学期总消费平均金额'
+            },
+            series: [{
+                type: 'pie',
+                radius: '50%',
+                label: { //饼图图形上的文本标签
+                    normal: {
+                        show: true,
+                        formatter: '{b}: {c}({d}%)'
+                    }
+                },
+                data: [
+                    { value: comspManTotal, name: '男' },
+                    { value: comspWomenTotal, name: '女' }
+                ]
+            }]
+        }
+    );
+    window.onresize = function() {
+        sexTotalChart.resize();
+        sexChart.resize();
+        ageChart.resize();
+        chengjiChart.resize();
+        attdChart.resize();
+        xiaofeiTotalChart.resize();
+        xiaofeiSexChart.resize();
+    };
+
+</script>
+</body>
+
+</html>

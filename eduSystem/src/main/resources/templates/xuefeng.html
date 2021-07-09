@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>学生画像系统</title>
+    <!-- 引入css -->
+    <link rel="stylesheet" th:href="@{css/bootstrap.min.css}" />
+    <link rel="stylesheet" th:href="@{css/bootstrap-responsive.min.css}" />
+    <link rel="stylesheet" th:href="@{css/matrix-style.css}" />
+    <link rel="stylesheet" th:href="@{css/matrix-media.css}" />
+    <!-- 引入js -->
+    <script type="text/javascript" th:src="@{js/jquery.min.js}"></script>
+    <script type="text/javascript" th:src="@{js/jquery.ui.custom.js}"></script>
+    <script type="text/javascript" th:src="@{js/bootstrap.min.js}"></script>
+    <script type="text/javascript" th:src="@{js/matrix.js}"></script>
+    <script type="text/javascript" th:src="@{js/select2.min.js}"></script>
+    <script type="text/javascript" th:src="@{js/echarts.min.js}"></script>
+</head>
+
+<body>
+<!--Header-part-->
+<div id="header">
+    <h1><a href="dashboard.html">首页</a></h1>
+</div>
+<!--close-Header-part-->
+
+<!--top-Header-menu-->
+<div id="user-nav" class="navbar navbar-inverse">
+    <ul class="nav">
+        <li class="dropdown" id="profile-messages">
+            <a title="" href="#">
+                <i class="icon icon-user"></i>
+                <span class="text" th:text="'欢迎，' + ${studentInfo.getStudentName}">欢迎，xxx</span>
+            </a>
+        </li>
+        <li class="">
+            <a title="" href="login">
+                <i class="icon icon-share-alt"></i>
+                <span class="text">退出</span>
+            </a>
+        </li>
+    </ul>
+</div>
+<!--close-top-Header-menu-->
+
+<!--start-top-serch-->
+<div id="search">
+    <input type="text" placeholder="输入搜索内容..." />
+    <button type="submit" class="tip-bottom" title="Search"><i class="icon-search icon-white"></i></button>
+</div>
+<!--close-top-serch-->
+
+<!--sidebar-menu-->
+<div id="sidebar"><a href="#" class="visible-phone"><i class="icon icon-home"></i> 控制台</a>
+    <ul>
+        <li><a href="/xtoIndex"><i class="icon icon-home"></i> <span>首页</span></a> </li>
+
+        <li> <a href="/xtoCharts"><i class="icon icon-eye-open"></i> <span>个人画像</span></a> </li>
+
+        <li class="submenu">
+            <a href="#"><i class="icon icon-th-list"></i> <span>工具</span> </a>
+            <ul>
+                <li><a href="/xtoScore">成绩预测</a></li>
+                <li><a href="/xtoChoice">七选三参考</a></li>
+                <li><a href="/xtoProfile">学生群像</a></li>
+                <li><a href="/xtoPianke">偏科生辅导</a></li>
+                <li><a href="/xtoSubsidies">贫困生补助</a></li>
+                <li class="active"><a href="#">学风分析报告</a></li>
+            </ul>
+        </li>
+    </ul>
+</div>
+<!--sidebar-menu-->
+
+<!--main-container-part-->
+<div id="content">
+    <!--breadcrumbs-->
+    <div id="content-header">
+        <div id="breadcrumb">
+            <a href="#" title="Go to Home" class="tip-bottom"><i class="icon-home"></i>首页</a>
+            <a href="#" class="current">工具-学风分析报告</a>
+        </div>
+        <h1>学风分析报告<span th:text="'/' + ${studentInfo.getClaName()} + '班'"></span></h1>
+    </div>
+    <div class="container-fluid">
+        <hr>
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="widget-box">
+                    <div class="widget-title"> <span class="icon"> <i class="icon-book"></i> </span>
+                        <h5>成绩现状（与同年级对比）——2018-2019第一学期</h5>
+                    </div>
+                    <div style="text-align: right; margin: 10px 10px auto auto; height: 26px;">
+                        <button style="display: none" id="back-button1" class="btn btn-info btn-small" onclick="initCJChart()">返回</button>
+                    </div>
+                    <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+                    <div id="cj" style="width: auto;height:400px;"></div>
+                </div>
+            </div>
+        </div>
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="widget-box">
+                    <div class="widget-title"> <span class="icon"> <i class="icon-book"></i> </span>
+                        <h5><span th:text="${studentInfo.getClaName()}"></span>班，历史成绩及变化情况</h5>
+                    </div>
+                    <div style="text-align: right; margin: 10px 10px auto auto; height: 26px;">
+                        <button style="display: none" id="back-button2" class="btn btn-info btn-small" onclick="initCJChangeChart()">返回</button>
+                    </div>
+                    <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+                    <div id="cjChange" style="width: auto;height:400px;"></div>
+                </div>
+            </div>
+        </div>
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="widget-box">
+                    <div class="widget-title"> <span class="icon"> <i class="icon-book"></i> </span>
+                        <h5><span th:text="${studentInfo.getClaName()}"></span>班，考勤情况（数据库内仅有2018-2019第一学期数据）</h5>
+                    </div>
+                    <div style="text-align: center; margin:10px 0 0 0; height: 26px; width: auto">
+                        <button id="chidao" style="background-color: #C23531; width: 55px" class="btn btn-info btn-small" onclick="changeKQChart(1)">迟到</button>
+                        <button id="zaotui" style="background-color: #2F4554; width: 55px; margin:0 7px 0 7px;" class="btn btn-info btn-small" onclick="changeKQChart(2)">早退</button>
+                        <button id="xiaofu" style="background-color: #61A0A8; width: 80px" class="btn btn-info btn-small" onclick="changeKQChart(3)">未穿校服</button>
+                        <button style="display: none" id="back-button3" class="btn btn-info btn-small" onclick="initKQChart()">返回</button>
+                    </div>
+                    <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+                    <div id="kq" style="width: auto;height:400px;"></div>
+                </div>
+            </div>
+        </div>
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="widget-box">
+                    <div class="widget-title"> <span class="icon"> <i class="icon-book"></i> </span>
+                        <h5>学风报告——<span th:text="${studentInfo.getClaName()}"></span>班</h5>
+                    </div>
+                    <div style="padding: 10px 0 20px 50px">
+                        <h4>学习：<span th:text="${chengjiRank} + ${chengjiChange}"></span></h4>
+
+                        <h4>考勤：<span th:text="${kaoqinRank}"></span></h4>
+                        <hr>
+                        <h4>总评：<span id="zongping"></span></h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script type="text/javascript" th:inline="javascript">
+    var chengjiFinal = [[${chengjiFinal}]];//成绩得分
+    var kaoqinFinal = [[${kaoqinFinal}]];//考勤得分
+
+    var zongpingFinal = Math.ceil(chengjiFinal * 0.6 + kaoqinFinal * 0.4);
+    if(zongpingFinal > 85){
+        document.getElementById("zongping").innerText = "A：优秀";
+    }
+    else if(zongpingFinal > 65){
+        document.getElementById("zongping").innerText = "B：良好";
+    }
+    else if(zongpingFinal > 55){
+        document.getElementById("zongping").innerText = "C：一般";
+    }
+    else if(zongpingFinal > 40){
+        document.getElementById("zongping").innerText = "D：低于平均水平";
+    }
+    else {
+        document.getElementById("zongping").innerText = "E：不合格";
+    }
+
+    var className = [[${studentInfo.getClaName()}]];//当前班级班级名称
+    var grade = [[${grade}]];//当年班级年级
+    var classNames = [[${classNames}]];
+    var classIndex = [[${classIndex}]];
+
+    var rank1 = [[${rank1}]];//各科成绩在年级中的位置排名
+    var rank2 = [[${rank2}]];//各科成绩在年级中的位置排名
+    var rank3 = [[${rank3}]];//各科成绩在年级中的位置排名
+    var rank4 = [[${rank4}]];//各科成绩在年级中的位置排名
+
+    var claNum1 = [[${claNum1}]];//同年级班级数量
+    var claNum2 = [[${claNum2}]];//同年级班级数量
+    var claNum3 = [[${claNum3}]];//同年级班级数量
+    var claNum4 = [[${claNum4}]];//同年级班级数量
+
+    var avgScoreEnterExam = [[${avgScoreEnterExam}]];
+    var avgScoreRegular1 = [[${avgScoreRegular1}]];
+    var avgScoreMidTerm = [[${avgScoreMidTerm}]];
+    var avgScoreRegular2 = [[${avgScoreRegular2}]];
+
+    var avgClaScoreEnterExam = [[${avgClaScoreEnterExam}]];
+    var avgClaScoreRegular1 = [[${avgClaScoreRegular1}]];
+    var avgClaScoreMidTerm = [[${avgClaScoreMidTerm}]];
+    var avgClaScoreRegular2 = [[${avgClaScoreRegular2}]];
+
+    function initCJChart() {
+        var optionCj =  {
+            title: {
+                text: className + '班-各科平均成绩',
+                x: 'center'
+            },
+            tooltip:{},
+            legend: {
+                data: ['平时成绩1', '期中考试成绩', '平时成绩2'],
+                x: '1100px',
+                orient: 'vertical'
+            },
+            yAxis: {
+                type: 'value',
+                name: '分数',
+                axisLabel: {
+                    formatter: '{value} 分'
+                }
+            },
+            xAxis: {
+                type: 'category',
+                name: '科目名称',
+                data: ["语文", "数学", "英语", "物理", "化学", "生物", "历史", "地理", "政治", "技术"]
+            },
+            series: [
+                {
+                    label: {
+                        show: true,
+                        position: 'inside'
+                    },
+                    name: '平时成绩1',
+                    type: 'bar',
+                    data: avgScoreRegular1
+                },{
+                    label: {
+                        show: true,
+                        position: 'inside'
+                    },
+                    name: '期中考试成绩',
+                    type: 'bar',
+                    data: avgScoreMidTerm
+                },{
+                    label: {
+                        show: true,
+                        position: 'inside'
+                    },
+                    name: '平时成绩2',
+                    type: 'bar',
+                    data: avgScoreRegular2
+                },
+
+            ]
+        };
+
+        echarts.dispose(document.getElementById('cj'));
+        let cjChart = echarts.init(document.getElementById('cj'));
+        document.getElementById("back-button1").style.display="none";
+        cjChart.setOption(optionCj);
+        cjChart.on('click', function (params) {
+            changeCJChart(params);
+        });
+    }
+
+    function changeCJChart(params) {
+        echarts.dispose(document.getElementById('cj'));
+        let cjChart = echarts.init(document.getElementById('cj'));
+        document.getElementById("back-button1").style.display="";
+
+        let rank;
+        let claNum;
+        let avgScore;
+        let avgClaScore;
+
+        switch (params.seriesName) {
+            case "平时成绩1":
+                rank = rank2;
+                claNum = claNum2;
+                avgScore = avgScoreRegular1;
+                avgClaScore = avgClaScoreRegular1;
+                break;
+            case "期中考试成绩":
+                rank = rank3;
+                claNum = claNum3;
+                avgScore = avgScoreMidTerm;
+                avgClaScore = avgClaScoreMidTerm;
+                break;
+            case "平时成绩2":
+                rank = rank4;
+                claNum = claNum4;
+                avgScore = avgScoreRegular2;
+                avgClaScore = avgClaScoreRegular2;
+                break;
+        }
+
+        let index = -1;
+        switch (params.name) {
+            case "语文":
+                index = 0;break;
+            case "数学":
+                index = 1;break;
+            case "英语":
+                index = 2;break;
+            case "物理":
+                index = 3;break;
+            case "化学":
+                index = 4;break;
+            case "生物":
+                index = 5;break;
+            case "地理":
+                index = 6;break;
+            case "历史":
+                index = 7;break;
+            case "政治":
+                index = 8;break;
+            case "技术":
+                index = 9;break;
+        }
+        cjChart.setOption(
+            {
+                title:{
+                    text: grade + "年级各班——" + params.seriesName + "——" + params.name + "——平均分",
+                    x : 'center'
+                },
+                tooltip:{},
+                yAxis: {
+                    type: 'value',
+                    name: '分数',
+                    axisLabel: {
+                        formatter: '{value} 分'
+                    }
+                },
+                xAxis: {
+                    type: 'category',
+                    name: '班级名称',
+                    data: classNames,
+                    axisLabel: {
+                        interval:0, //坐标刻度之间的显示间隔，默认就可以了（默认是不重叠）
+                        rotate:-40   //调整数值改变倾斜的幅度（范围-90到90）
+                    }
+                },
+                series: {
+                    name: className + '班',
+                    label: {
+                        show: true,
+                        position: 'inside'
+                    },
+                    type: 'bar',
+                    data: avgClaScore[index],
+                    itemStyle: {
+                        color: function(params){
+                            let c ='';
+                            if(params.name == className){
+                                c='#49AFCD'
+                            }else{
+                                c='#C23531'
+                            }
+                            return c;
+                        }
+                    },
+                    markLine: {
+                        symbol: "none",
+                        data: [
+                            {
+                                name: params.name + '平均分',
+                                silent: false,             //鼠标悬停事件  true没有，false有
+                                lineStyle: {               //警戒线的样式  ，虚实  颜色
+                                    type: "solid",
+                                    color: "#49AFCD"
+                                },
+                                label:{
+                                    position:'end',
+                                    formatter:'名次：' + rank[index] + '名/' + claNum[index],
+                                    fontSize:'12'
+                                },
+                                yAxis: avgScore[index]
+                            }
+                        ]
+                    }
+                }
+            }
+        );
+    }
+
+    initCJChart();
+
+    function initCJChangeChart(){
+        var optionCjChange = {
+            title: {
+                text: '历史成绩→按时间递增→',
+                x: 'center'
+            },
+            tooltip:{},
+            legend: {
+                x: '1100px',
+                orient: 'vertical'
+            },
+            dataset: {
+                source: [
+                    ['科目名称', "语文", "数学", "英语", "物理", "化学", "生物", "历史", "地理", "政治", "技术"],
+                    ['入学考试成绩', avgScoreEnterExam[0], avgScoreEnterExam[1], avgScoreEnterExam[2], avgScoreEnterExam[3], avgScoreEnterExam[4], avgScoreEnterExam[5], avgScoreEnterExam[6], avgScoreEnterExam[7], avgScoreEnterExam[8], avgScoreEnterExam[9]],
+                    ['平时成绩1', avgScoreRegular1[0], avgScoreRegular1[1], avgScoreRegular1[2], avgScoreRegular1[3], avgScoreRegular1[4], avgScoreRegular1[5], avgScoreRegular1[6], avgScoreRegular1[7], avgScoreRegular1[8], avgScoreRegular1[9]],
+                    ['期中考试成绩', avgScoreMidTerm[0], avgScoreMidTerm[1], avgScoreMidTerm[2], avgScoreMidTerm[3], avgScoreMidTerm[4], avgScoreMidTerm[5], avgScoreMidTerm[6], avgScoreMidTerm[7], avgScoreMidTerm[8], avgScoreMidTerm[9]],
+                    ['平时成绩2', avgScoreRegular2[0], avgScoreRegular2[1], avgScoreRegular2[2], avgScoreRegular2[3], avgScoreRegular2[4], avgScoreRegular2[5], avgScoreRegular2[6], avgScoreRegular2[7], avgScoreRegular2[8], avgScoreRegular2[9]]
+                ]
+            },
+            yAxis: {
+                type: 'value',
+                name: '分数',
+                axisLabel: {
+                    formatter: '{value} 分'
+                }
+            },
+            xAxis: {
+                type: 'category',
+                name: '考试类别名称'
+            },
+            series: [
+                {type: 'bar',label: {show: true, position: 'inside'},},
+                {type: 'bar',label: {show: true, position: 'inside'},},
+                {type: 'bar',label: {show: true, position: 'inside'},},
+                {type: 'bar',label: {show: true, position: 'inside'},},
+                {type: 'bar',label: {show: true, position: 'inside'},},
+                {type: 'bar',label: {show: true, position: 'inside'},},
+                {type: 'bar',label: {show: true, position: 'inside'},},
+                {type: 'bar',label: {show: true, position: 'inside'},},
+                {type: 'bar',label: {show: true, position: 'inside'},},
+                {type: 'bar',label: {show: true, position: 'inside'},}
+            ]
+        };
+
+        echarts.dispose(document.getElementById('cjChange'));
+        let cjChangeChart = echarts.init(document.getElementById('cjChange'));
+        document.getElementById("back-button2").style.display="none";
+        cjChangeChart.setOption(optionCjChange);
+        cjChangeChart.on('click', function (params) {
+            changeCJChangeChart(params);
+        });
+    }
+
+    function changeCJChangeChart(params){
+        echarts.dispose(document.getElementById('cjChange'));
+        let cjChangeChart = echarts.init(document.getElementById('cjChange'));
+        document.getElementById("back-button2").style.display="";
+        let index = -1;
+        switch (params.seriesName) {
+            case "语文":
+                index = 0;break;
+            case "数学":
+                index = 1;break;
+            case "英语":
+                index = 2;break;
+            case "物理":
+                index = 3;break;
+            case "化学":
+                index = 4;break;
+            case "生物":
+                index = 5;break;
+            case "地理":
+                index = 6;break;
+            case "历史":
+                index = 7;break;
+            case "政治":
+                index = 8;break;
+            case "技术":
+                index = 9;break;
+        }
+
+        let rankReverse1 = parseInt((claNum1[index] - rank1[index]) * 100 / claNum1[index]);
+        let rankReverse3 = parseInt((claNum3[index] - rank3[index]) * 100 / claNum3[index]);
+        cjChangeChart.setOption(
+            {
+                title:{
+                    text: params.seriesName + '平均成绩→按时间递增→',
+                    x : 'center'
+                },
+                tooltip: {
+                    trigger: 'axis',
+                    axisPointer: {
+                        type: 'cross',
+                        crossStyle: {
+                            color: '#999'
+                        }
+                    }
+                },
+                legend: {
+                    data: ['分数', '超越同年级班级百分比'],
+                    x: '300px',
+                    orient: 'vertical'
+                },
+                yAxis: [
+                    {
+                        type: 'value',
+                        name: '分数',
+                        axisLabel: {
+                            formatter: '{value} 分'
+                        }
+                    },{
+                        type: 'value',
+                        name: '超越同年级班级百分比',
+                        max: 100,
+                        axisLabel: {
+                            formatter: '{value} %'
+                        }
+                    }
+                ],
+                xAxis: {
+                    type: 'category',
+                    data: ['入学考试成绩', '期中考试成绩']
+                },
+                series: [
+                    {
+                        name: '分数',
+                        label: {
+                            show: true,
+                            position: 'inside'
+                        },
+                        type: 'bar',
+                        data: [avgScoreEnterExam[index], avgScoreMidTerm[index]]
+                    },{
+                        name: '超越同年级班级百分比',
+                        yAxisIndex: 1,
+                        type: 'line',
+                        data: [rankReverse1, rankReverse3]
+                    }
+                ]
+
+            }
+        );
+    }
+
+    initCJChangeChart();
+
+
+    var chidao = [[${chidao}]];
+    var zaotui = [[${zaotui}]];
+    var xiaofu = [[${xiaofu}]];
+    var dates = [[${dates}]];
+    var datasChidao = [[${datasChidao}]];
+    var datasZaotui = [[${datasZaotui}]];
+    var datasXiaofu = [[${datasXiaofu}]];
+
+    function initKQChart(){
+        var optionKq = {
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: {
+                    type: 'cross',
+                    crossStyle: {
+                        color: '#999'
+                    }
+                },
+                position: function (pt) {
+                    return [pt[0], '10%'];
+                }
+            },
+            toolbox: {
+                feature: {
+                    dataZoom: {
+                        yAxisIndex: 'none'
+                    },
+                    restore: {}
+                }
+            },
+            legend: {},
+            xAxis: {
+                name: '时间',
+                type: 'category',
+                boundaryGap: false,
+                data: dates
+            },
+            yAxis: {
+                name: '次数',
+                type: 'value',
+                boundaryGap: [0, '100%'],
+                axisLabel: {
+                    formatter: '{value} 次'
+                }
+            },
+            dataZoom: [{
+                type: 'inside',
+                start: 0,
+                end: 100
+            }, {
+                start: 0,
+                end: 10,
+                handleIcon: 'M10.7,11.9v-1.3H9.3v1.3c-4.9,0.3-8.8,4.4-8.8,9.4c0,5,3.9,9.1,8.8,9.4v1.3h1.3v-1.3c4.9-0.3,8.8-4.4,8.8-9.4C19.5,16.3,15.6,12.2,10.7,11.9z M13.3,24.4H6.7V23h6.6V24.4z M13.3,19.6H6.7v-1.4h6.6V19.6z',
+                handleSize: '80%',
+                handleStyle: {
+                    color: '#fff',
+                    shadowBlur: 3,
+                    shadowColor: 'rgba(0, 0, 0, 0.6)',
+                    shadowOffsetX: 2,
+                    shadowOffsetY: 2
+                }
+            }],
+            series: [
+                {
+                    name: '迟到',
+                    type: 'line',
+                    symbol: 'none',
+                    sampling: 'average',
+                    label: {
+                        show: true,
+                        position: 'inside'
+                    },
+                    data: datasChidao
+                },{
+                    name: '早退',
+                    type: 'line',
+                    symbol: 'none',
+                    sampling: 'average',
+                    label: {
+                        show: true,
+                        position: 'inside'
+                    },
+                    data: datasZaotui
+                },{
+                    name: '未穿校服',
+                    type: 'line',
+                    symbol: 'none',
+                    sampling: 'average',
+                    label: {
+                        show: true,
+                        position: 'inside'
+                    },
+                    data: datasXiaofu
+                },
+            ]
+        };
+
+        echarts.dispose(document.getElementById('kq'));
+        let kqChart = echarts.init(document.getElementById('kq'));
+        document.getElementById("chidao").style.display="";
+        document.getElementById("zaotui").style.display="";
+        document.getElementById("xiaofu").style.display="";
+        document.getElementById("back-button3").style.display="none";
+        kqChart.setOption(optionKq);
+    }
+
+    initKQChart();
+
+    function changeKQChart(index){
+        echarts.dispose(document.getElementById('kq'));
+        let kqChart = echarts.init(document.getElementById('kq'));
+        document.getElementById("chidao").style.display="none";
+        document.getElementById("zaotui").style.display="none";
+        document.getElementById("xiaofu").style.display="none";
+        document.getElementById("back-button3").style.display="";
+
+        let name;
+        let tempData;
+        switch (index) {
+            case 1:
+                name = "迟到";
+                tempData = chidao;break;
+            case 2:
+                name = "早退";
+                tempData = zaotui;break;
+            case 3:
+                name = "未穿校服";
+                tempData = xiaofu;break;
+        }
+
+        kqChart.setOption(
+            {
+                title:{
+                    text: name,
+                    x: '300px'
+                },
+                tooltip:{},
+                yAxis: {
+                    type: 'value',
+                    name: '总次数',
+                    axisLabel: {
+                        formatter: '{value} 次'
+                    }
+                },
+                xAxis: {
+                    type: 'category',
+                    name: '班级名称',
+                    data: classNames,
+                    axisLabel: {
+                        interval:0, //坐标刻度之间的显示间隔，默认就可以了（默认是不重叠）
+                        rotate:-40   //调整数值改变倾斜的幅度（范围-90到90）
+                    }
+                },
+                series: {
+                    name: className + '班',
+                    label: {
+                        show: true,
+                        position: 'inside'
+                    },
+                    type: 'bar',
+                    data: tempData,
+                    itemStyle: {
+                        color: function(params){
+                            let c ='';
+                            if(params.name == className){
+                                c='#49AFCD'
+                            }else{
+                                c='#C23531'
+                            }
+                            return c;
+                        }
+                    },
+                    markLine: {
+                        symbol: "none",
+                        data: [
+                            {
+                                name: '迟到次数',
+                                silent: false,             //鼠标悬停事件  true没有，false有
+                                lineStyle: {               //警戒线的样式  ，虚实  颜色
+                                    type: "solid",
+                                    color: "#49AFCD"
+                                },
+                                label:{
+                                    position: 'end',
+                                    formatter: '',
+                                    fontSize: '12'
+                                },
+                                yAxis: tempData[classIndex]
+                            }
+                        ]
+                    }
+                }
+            }
+        );
+    }
+
+</script>
+
+</body>
+
+</html>

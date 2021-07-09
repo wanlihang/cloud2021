@@ -1,10 +1,10 @@
 package com.wlh.springcloud.controller;
 
-import com.wlh.springcloud.entities.Score;
-import com.wlh.springcloud.entities.T2StudentInfo;
-import com.wlh.springcloud.entities.T5Chengji;
-import com.wlh.springcloud.service.T2StudentInfoService;
-import com.wlh.springcloud.service.T5ChengjiService;
+import com.wlh.springcloud.entity.Score;
+import com.wlh.springcloud.entity.Student;
+import com.wlh.springcloud.entity.StudentTranscripts;
+import com.wlh.springcloud.service.StudentService;
+import com.wlh.springcloud.service.StudentTranscriptsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,9 +19,9 @@ import java.util.List;
 @Controller
 public class choiceController {
     @Autowired
-    private T2StudentInfoService studentInfoService;
+    private StudentService studentService;
     @Autowired
-    private T5ChengjiService chengjiService;
+    private StudentTranscriptsService studentTranscriptsService;
     private Integer studentId;
 
     @RequestMapping("/choice")
@@ -29,12 +29,10 @@ public class choiceController {
         // model.addAttribute("test", "就哈哈哈哈哈哈哈哈哈哈哈");
         studentId = s;
         //获取studentInfo
-        T2StudentInfo studentInfo = studentInfoService.selectByBfStudentId(studentId);
-        model.addAttribute("studentInfo", studentInfo);
-        int flag = 0;
-        flag = scoreController.getFlag(studentInfo, flag);
+        Student student = studentService.selectByBfStudentId(studentId);
+        model.addAttribute("student", student);
         //分高一高二高三
-        showChoice(model, flag);
+        showChoice(model, student.getGradeId());
 
         return "choice";
     }
@@ -43,7 +41,7 @@ public class choiceController {
         String sug[] = new String[3];
         int preScore[] = new int[7];
 
-        List<T5Chengji> chengjiList = chengjiService.selectByStudentId(studentId);
+        List<StudentTranscripts> chengjiList = studentTranscriptsService.selectByStudentId(studentId);
         //最多5个学期
 
         int score[][] = new int[30][65];//语文-技术10门课程分数
@@ -51,17 +49,17 @@ public class choiceController {
         int count[] = new int[65];//记录每门课程的成绩数
         int prediction[] = new int[65];//记录每门课程的预测分数
 
-        for(T5Chengji chengji1 : chengjiList) {
+        for(StudentTranscripts chengji1 : chengjiList) {
             //无课程号、无学期、无分数则不记录
-            if (chengji1.getMesSubId().equals(0) || chengji1.getExamTerm().isEmpty() || chengji1.getMesTScore().isEmpty()) {
+            if (chengji1.getSubjectId().equals(0) || chengji1.getExamTerm().isEmpty() || chengji1.getScore() < 1) {
                 continue;
             }
             String examTerm = chengji1.getExamTerm();
-            int subId = chengji1.getMesSubId();
-            int examType = chengji1.getExamType();
-            int sco = Float.valueOf(chengji1.getMesTScore()).intValue();
+            int subId = chengji1.getSubjectId();
+            int examType = chengji1.getExamKindId();
+            int sco = Float.valueOf(chengji1.getTScore()).intValue();
             //去掉00:00:00
-            String dsplit[] = chengji1.getExamSdate().split(" ");
+            String dsplit[] = chengji1.getExamDate().split(" ");
             String date = dsplit[0];
 
             if(flag == 1){

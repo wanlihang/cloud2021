@@ -2,7 +2,7 @@ package com.wlh.springcloud.service.impl;
 
 
 import com.wlh.springcloud.dao.PaymentDao;
-import com.wlh.springcloud.entities.Payment;
+import com.wlh.springcloud.entity.Payment;
 import com.wlh.springcloud.service.PaymentService;
 import org.springframework.stereotype.Service;
 
