@@ -5,10 +5,11 @@ spring:
   application:
     name: eduSystem
   datasource:
-    driver-class-name: com.mysql.jdbc.Driver            # mysql驱动包 com.mysql.jdbc.Driver
-    url: jdbc:mysql://120.79.80.74:3306/edu_system?useUnicode=true&characterEncoding=utf-8&useSSL=false
+    type: com.alibaba.druid.pool.DruidDataSource            # 当前数据源操作类型
+    driver-class-name: org.gjt.mm.mysql.Driver              # mysql驱动包 com.mysql.jdbc.Driver
+    url: jdbc:mysql://120.24.242.214:3306/db2021?useUnicode=true&characterEncoding=utf-8&useSSL=false
     username: root
-    password: wlhroot
+    password: acd270e56ec246ae
 
 mybatis:
   mapperLocations: classpath:mapper/*.xml
